@@ -32,7 +32,7 @@ export default function Register() {
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="name" value="Name" />
+                    <InputLabel htmlFor="name" value="Nombre" />
 
                     <TextInput
                         id="name"
@@ -47,7 +47,38 @@ export default function Register() {
 
                     <InputError message={errors.name} className="mt-2" />
                 </div>
+                <div>
+                    <InputLabel htmlFor="surname" value="Apellidos" />
 
+                    <TextInput
+                        id="surname"
+                        name="surname"
+                        value={data.surname}
+                        className="mt-1 block w-full"
+                        autoComplete="surname"
+                        isFocused={true}
+                        onChange={(e) => setData('surname', e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.surname} className="mt-2" />
+                </div>
+                <div>
+                    <InputLabel htmlFor="phone" value="Telefono" />
+
+                    <TextInput
+                        id="phone"
+                        name="phone"
+                        value={data.phone}
+                        className="mt-1 block w-full"
+                        autoComplete="phone"
+                        isFocused={true}
+                        onChange={(e) => setData('phone', e.target.value)}
+                        required
+                    />
+
+                    <InputError message={errors.phone} className="mt-2" />
+                </div>
                 <div className="mt-4">
                     <InputLabel htmlFor="email" value="Email" />
 
@@ -83,7 +114,7 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
+                    <InputLabel htmlFor="password_confirmation" value="Confirma tu Contraseña" />
 
                     <TextInput
                         id="password_confirmation"
@@ -104,11 +135,11 @@ export default function Register() {
                         href={route('login')}
                         className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                        Already registered?
+                        ¿Ya tienes una cuenta?
                     </Link>
 
                     <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
+                        Registrar
                     </PrimaryButton>
                 </div>
             </form>

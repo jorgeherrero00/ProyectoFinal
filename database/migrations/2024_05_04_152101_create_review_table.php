@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('order_id')->unsigned();
             $table->foreign('order_id')->references('id_order')->on('order');
             $table->integer('customer_id')->unsigned();
-            $table->foreign('customer_id')->references('id_customer')->on('users');
+            $table->foreign('customer_id')->references('id')->on('users');
             $table->string('title', 50);
             $table->text('description');
             $table->integer('rating');

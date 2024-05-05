@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('order', function (Blueprint $table) {
             $table->increments('id_order');
             $table->integer('customer_id')->unsigned();
-            $table->foreign('customer_id')->references('id_customer')->on('users');
+            $table->foreign('customer_id')->references('id')->on('users');
             $table->dateTime('order_date');
             $table->string('items', 45);
             $table->float('price');
