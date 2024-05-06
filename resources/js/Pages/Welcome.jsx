@@ -35,6 +35,12 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 <Link href='crear-categoria'>
                                     Crear categoria
                                 </Link>
+                                <Link href='crear-producto'>
+                                    Crear producto
+                                </Link>
+                                <Link href='productos'>
+                                    Productos
+                                </Link>
                             </div>
                                 </>
                                                                

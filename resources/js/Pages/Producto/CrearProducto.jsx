@@ -1,75 +1,91 @@
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/router';
+import { router } from '@inertiajs/react'
 
 const CrearProducto = () => {
-  const { register, handleSubmit } = useForm();
-  const router = useRouter();
+  const [state, setState] = useState({
+    name: '',
+    category_id: '',
+    description: '',
+    price: '',
+    stock: ''
+  });
   
-  const onSubmit = async (data) => {
-    console.log(data);
-    // Aquí puedes enviar los datos del formulario a tu backend, por ejemplo:
-    try {
-      const response = await fetch('/crearProducto', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (response.ok) {
-        // Redirigir a la página de éxito o hacer cualquier otra cosa necesaria
-        router.push('/exito');
-      } else {
-        // Manejar errores
-      }
-    } catch (error) {
-      console.error('Error al enviar el formulario:', error);
-    }
-  };
+  const handleChange = (e) => {
+    setState({
+      ...state,
+      [e.target.name]: e.target.value
+    });
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Nombre:', state.name);
+    console.log('Categoria:', state.category_id);
+    console.log('Descripción:', state.description);
+    console.log('Precio:', state.price);
+    console.log('Stock:', state.stock);
+    router.post('/crearProducto', state)
+    setState({
+      name: '',
+      description: '',
+      category_id: '',
+      price: '',
+      stock: ''
+    });
+  }
 
   return (
     <div>
-      <h2>Crear Producto</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <h2>Crear Categoría</h2>
+      <form onSubmit={handleSubmit}>
         <div>
           <label>Nombre:</label>
           <input
             type="text"
-            {...register('name')}
+            name="name"
+            value={state.name}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>Categoria:</label>
+          <input
+            type="text"
+            name="category_id"
+            value={state.category_id}
+            onChange={handleChange}
           />
         </div>
         <div>
           <label>Descripción:</label>
           <textarea
-            {...register('description')}
+            name="description"
+            value={state.description}
+            onChange={handleChange}
           ></textarea>
-        </div>
-        <div>
-          <label>Categoría:</label>
-          <input
-            type="text"
-            {...register('category')}
-          />
         </div>
         <div>
           <label>Precio:</label>
           <input
-            type="number"
-            {...register('price')}
+            type="text"
+            name="price"
+            value={state.price}
+            onChange={handleChange}
           />
         </div>
         <div>
           <label>Stock:</label>
           <input
-            type="number"
-            {...register('stock')}
+            type="text"
+            name="stock"
+            value={state.stock}
+            onChange={handleChange}
           />
         </div>
-        <button type="submit">Crear Producto</button>
+        <button type="submit">Crear Categoría</button>
       </form>
     </div>
   );
-};
+}
 
 export default CrearProducto;

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Product;
 class ProductoController extends Controller
 {
     
@@ -29,8 +29,9 @@ class ProductoController extends Controller
         return $product;
     }
 
-    public function borrarProducto($id){
-
+    public function borrarProducto(Request $request){
+        
+        $id = $request->all()['id_product'];
         return Product::destroy($id);
     }
 
