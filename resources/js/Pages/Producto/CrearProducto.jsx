@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { router } from '@inertiajs/react'
+import React, { useState, useEffect } from 'react';
+import { router } from '@inertiajs/react';
 
 const CrearProducto = () => {
   const [state, setState] = useState({
@@ -9,7 +9,17 @@ const CrearProducto = () => {
     price: '',
     stock: ''
   });
-  
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    // Fetch categories from the server
+    fetch('/obtenerCategorias')
+      .then(response => response.json())
+      .then(data => setCategories(data))
+      .catch(error => console.log(error));
+  }, []);
+  console.log(categories)
   const handleChange = (e) => {
     setState({
       ...state,
@@ -36,7 +46,7 @@ const CrearProducto = () => {
 
   return (
     <div>
-      <h2>Crear Categoría</h2>
+      <h2>Crear Producto</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Nombre:</label>
@@ -49,12 +59,18 @@ const CrearProducto = () => {
         </div>
         <div>
           <label>Categoria:</label>
-          <input
-            type="text"
+          <select
             name="category_id"
             value={state.category_id}
             onChange={handleChange}
-          />
+          >
+            <option value="">Selecciona una categoría</option>
+            {categories.map(category => (
+              <option key={category.id_category} value={category.id_category}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label>Descripción:</label>
@@ -82,7 +98,7 @@ const CrearProducto = () => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit">Crear Categoría</button>
+        <button type="submit">Crear Producto</button>
       </form>
     </div>
   );

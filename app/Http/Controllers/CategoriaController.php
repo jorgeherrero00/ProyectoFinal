@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Inertia\Inertia;
+
 class CategoriaController extends Controller
 {
     public function crearCategoria(Request $request){
-        return Category::create($request->all());
+        Category::create($request->all());
+
+        return Inertia::render('Categoria/ListaCategoria');
     }
 
     public function obtenerCategorias(){
@@ -19,6 +23,8 @@ class CategoriaController extends Controller
     }
 
     public function actualizarCategoria(Request $request, $id){
+
+        dd($request->all());
         $category = Category::find($id);
         $category->update($request->all());
         return $category;
@@ -26,6 +32,8 @@ class CategoriaController extends Controller
 
     public function borrarCategoria(Request $request){
         $id = $request->all()['id_category'];
-        return Category::destroy($id);
+        Category::destroy($id);
+        
+        return Inertia::render('Categoria/ListaCategoria');
     }
 }

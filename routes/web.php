@@ -36,6 +36,10 @@ Route::get('/productos', function () {
     return Inertia::render('Producto/ListaProducto');
 })->name('Producto/ListaProducto');
 
+Route::get('/actualizar-categoria', function(){
+    return Inertia::render('Categoria/EditarCategoria');
+})->name('Categoria/EditarCategoria');
+
 Route::post('borrarProducto/', [\App\Http\Controllers\ProductoController::class, 'borrarProducto'])->name('borrar-producto');
 Route::post('borrarCategoria/', [\App\Http\Controllers\CategoriaController::class, 'borrarCategoria'])->name('borrar-categoria');
 
@@ -47,6 +51,7 @@ Route::middleware('auth')->group(function () {
 
 Route::post('crearCategoria', [\App\Http\Controllers\CategoriaController::class, 'crearCategoria'])->name('crear-categoria');
 Route::get('obtenerCategorias', [\App\Http\Controllers\CategoriaController::class, 'obtenerCategorias'])->name('obtener-categorias');
+Route::post('actualizarCategoria', [\App\Http\Controllers\CategoriaController::class, 'actualizarCategoria'])->name('actualizar-categoria');
 Route::post('crearProducto', [\App\Http\Controllers\ProductoController::class, 'crearProducto'])->name('crear-producto');
 Route::get('obtenerProductos', [\App\Http\Controllers\ProductoController::class, 'obtenerProductos'])->name('obtener-productos');
 require __DIR__.'/auth.php';

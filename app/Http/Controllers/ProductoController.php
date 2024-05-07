@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Inertia\Inertia;
+
 class ProductoController extends Controller
 {
     
     public function crearProducto(Request $request){
-        return Product::create($request->all());
+         Product::create($request->all());
+         return Inertia::render('Producto/ListaProducto');
     }
 
     public function obtenerProductos(){
@@ -32,7 +35,8 @@ class ProductoController extends Controller
     public function borrarProducto(Request $request){
         
         $id = $request->all()['id_product'];
-        return Product::destroy($id);
+        Product::destroy($id);
+        return Inertia::render('Producto/ListaProducto');
     }
 
     
