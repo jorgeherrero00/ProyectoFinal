@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { router } from '@inertiajs/react'
-import { useParams } from 'react-router-dom';
-
+console.log(window.location.href.split('/').pop())
+let id = (window.location.href.split('/').pop())
 
 export default function EditarCategoria() {
-    
     const [state, setState] = useState({
         name: '',
         description: ''
@@ -47,6 +46,7 @@ export default function EditarCategoria() {
             <h2>Editar Categoría</h2>
             <form onSubmit={handleSubmit}>
                 <div>
+                    <h1>Categoria con id: {id}</h1>
                     <label>Nombre:</label>
                     <input
 

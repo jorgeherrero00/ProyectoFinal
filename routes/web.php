@@ -36,9 +36,10 @@ Route::get('/productos', function () {
     return Inertia::render('Producto/ListaProducto');
 })->name('Producto/ListaProducto');
 
-Route::get('/actualizar-categoria', function(){
+Route::get('/actualizar-categoria/{id}', function($id){
     return Inertia::render('Categoria/EditarCategoria');
-})->name('Categoria/EditarCategoria');
+})->name('actualizar-categoria');
+
 
 Route::post('borrarProducto/', [\App\Http\Controllers\ProductoController::class, 'borrarProducto'])->name('borrar-producto');
 Route::post('borrarCategoria/', [\App\Http\Controllers\CategoriaController::class, 'borrarCategoria'])->name('borrar-categoria');

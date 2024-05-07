@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { router } from '@inertiajs/react'
+
+
 export default function ListaProductos() {
     const [productos, setProductos] = useState([]);
 
@@ -31,4 +33,5 @@ export default function ListaProductos() {
             </ul>
         </div>
     );
+    
 }
