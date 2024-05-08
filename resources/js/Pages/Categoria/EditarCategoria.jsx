@@ -1,72 +1,72 @@
-/* Make a file to edit a category*/
-
 import { useState, useEffect } from "react";
-import { router } from '@inertiajs/react'
-console.log(window.location.href.split('/').pop())
-let id = (window.location.href.split('/').pop())
+import axios from "axios";
 
-export default function EditarCategoria() {
+export default function EditarCategoria({ categoria, onUpdate }) {
     const [state, setState] = useState({
-        name: '',
-        description: ''
+        id: categoria.id_category,
+        name: categoria.name,
+        description: categoria.description
     });
-    
-    const [categories, setCategories] = useState([]);
-
+    const [error, setError] = useState(null);
+    const[success, setSuccess] = useState(null);
     useEffect(() => {
-        
-        fetch('/obtenerCategorias')
-            .then(response => response.json())
-            .then(data => setCategories(data))
-            .catch(error => console.log(error));
-    })
+        if (categoria != null) {
+            setState({
+                id: categoria.id_category,
+                name: categoria.name,
+                description: categoria.description
+            });
+        }
+    }, [categoria]);
 
     const handleChange = (e) => {
-        
         setState({
             ...state,
             [e.target.name]: e.target.value
         });
-
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Nombre:', state.name);
-        console.log('Descripción:', state.description);
-        router.post('/actualizarCategoria', state)
-        setState({
-            name: '',
-            description: ''
+        axios.post('/actualizarCategoria', state).then((response) => {
+            if (response.status == 200) {
+                setSuccess('Categoría actualizada exitosamente.');
+                    window.location.reload();
+            }
+           
+        }).catch((error) => {
+        setError('Error al actualizar la categoría.');
         });
-    }
+}
 
     return (
         <div>
-            <h2>Editar Categoría</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <h1>Categoria con id: {id}</h1>
-                    <label>Nombre:</label>
-                    <input
+            {categoria && (
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label>Nombre:</label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={state.name}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div>
+                        <label>Descripción:</label>
+                        <input
+                            type="text"
+                            name="description"
+                            value={state.description}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <button type="submit">Actualizar</button>
+                </form>
+            )}
 
-                        type="text"
-                        name="name"
-                        value={state.name}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div>
-                    <label>Descripción:</label>
-                    <input
-                        type="text"
-                        name="description"
-                        value={state.description}
-                        onChange={handleChange}
-                    />
-                </div>
-                <button type="submit">Actualizar</button>
-            </form>
+            {error && <p>{error}</p>}
+            {success && <p>{success}</p>}
         </div>
     )
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('review', function (Blueprint $table) {
             $table->increments('id_review');
             $table->integer('order_id')->unsigned();
-            $table->foreign('order_id')->references('id_order')->on('order');
+            $table->foreign('order_id')->references('id_order')->on('order')->onDelete('cascade');
             $table->integer('customer_id')->unsigned();
             $table->foreign('customer_id')->references('id')->on('users');
             $table->string('title', 50);

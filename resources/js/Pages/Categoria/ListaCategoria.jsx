@@ -1,10 +1,13 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { router } from '@inertiajs/react'
-import { BrowserRouter as Route } from "react-router-dom";
-import EditarCategoria from "./EditarCategoria";
+import EditarCategoria from './EditarCategoria.jsx';
+import axios from "axios";
 
 export default function ListaCategorias() {
     const [categorias, setCategorias] = useState([]);
+    const [modoEdicion, setModoEdicion] = useState(false);
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+    const [borrado, setBorrado] = useState(null);
 
     useEffect(() => {
         fetch('/obtenerCategorias')
@@ -12,26 +15,43 @@ export default function ListaCategorias() {
             .then(data => setCategorias(data));
     }, []);
 
- const handleDeleteCategory = ( id_category ) => {
-        router.post('/borrarCategoria', { id_category })
+    const handleDeleteCategory = (id_category) => {
+        axios.post('borrarCategoria/', {
+            id_category: id_category,
+          })
+          .then(function (response) {
+            setBorrado('Se ha borrado correctamente');
+            window.location.reload();
+          })
+          .catch(function (error) {
+            setBorrado('Error al borrar la categoría');
+          });
     };
 
-    const handleEditCategory = (id_category) => {
-        console.log(id_category)
-        router.get(`/actualizar-categoria/${ id_category }`)
-      }
+    const handleEditCategory = (categoria) => {
+        setModoEdicion(prevModoEdicion => (categoriaSeleccionada === categoria && prevModoEdicion) ? !prevModoEdicion : true);
+        setCategoriaSeleccionada(categoria);
+    }
+
     return (
         <div>
             <h1>Lista de Categorías</h1>
             <ul>
                 {categorias.map(categoria => (
-                    <li key={categoria.id_category}>Nombre: {categoria.name}--------Descripción: {categoria.description}
-                    <button id={categoria.id_category} onClick={() => handleDeleteCategory(categoria.id_category)}>Eliminar</button>
-                    <button id={categoria.id_category} onClick={() => handleEditCategory(categoria.id_category)}>Editar</button>
-                    <Route path="/diets:id" component={EditarCategoria} />
+                    <li key={categoria.id_category}>
+                        Nombre: {categoria.name}--------Descripción: {categoria.description}
+                        <button id={categoria.id_category} onClick={() => handleDeleteCategory(categoria.id_category)}>Eliminar</button>
+                        <button id={categoria.id_category} onClick={() => handleEditCategory(categoria)}>Editar</button>
                     </li>
                 ))}
             </ul>
+            {modoEdicion && (
+                <EditarCategoria categoria={categoriaSeleccionada} />
+            )}
+
+            {borrado && (
+                <p>{borrado}</p>
+            )}
         </div>
     );
 }
