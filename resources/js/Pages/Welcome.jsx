@@ -41,6 +41,9 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 <Link href='productos'>
                                     Productos
                                 </Link>
+                                <Link href='carrito'>
+                                    Carrito
+                                </Link>
                             </div>
                                 </>
                                                                

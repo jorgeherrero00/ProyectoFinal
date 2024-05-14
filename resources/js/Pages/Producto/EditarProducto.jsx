@@ -1,36 +1,113 @@
 import { useState, useEffect } from "react";
-import { router } from '@inertiajs/react'
-export default function ListaProductos() {
+import axios from "axios";
 
-    const [productos, setProductos] = useState([]);
+export default function EditarProducto({ producto, onUpdate }) {
+    const [state, setState] = useState({
+        id: producto.id_product,
+        name: producto.name,
+        description: producto.description
+    });
+    const [error, setError] = useState(null);
+    const[success, setSuccess] = useState(null);
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        fetch('/obtenerProductos')
-            .then(response => response.json())
-            .then(data => setProductos(data));
-    }, []);
+        if (producto != null) {
+            setState({
+                id: producto.id_product,
+                name: producto.name,
+                category_id: producto.category_id,
+                description: producto.description,
+                stock: producto.stock,
+                price: producto.price
+            });
+        }
+    }, [producto]);
 
-    const handleDeleteProduct = ( id_product ) => {
-        router.post('/borrarProducto', { id_product })
-    };
+    useEffect(() => {
+        // Fetch categories from the server
+        fetch('/obtenerCategorias')
+          .then(response => response.json())
+          .then(data => setCategories(data))
+          .catch(error => console.log(error));
+      }, []);
 
-    const handleEditProduct = ( id_product ) => {
-        router.post('/actualizarProducto', { id_product })
+    const handleChange = (e) => {
+        setState({
+            ...state,
+            [e.target.name]: e.target.value
+        });
     }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        axios.post('/actualizarProducto', state).then((response) => {
+            if (response.status == 200) {
+                setSuccess('Categoría actualizada exitosamente.');
+                    window.location.reload();
+            }
+           
+        }).catch((error) => {
+            console.log(error);
+        setError('Error al actualizar la categoría.');
+        });
+}
 
     return (
         <div>
-            <h1>Lista de Productos</h1>
-            <ul>
-                {productos.map(producto => (
-                    <li key={producto.id}>
-                        Nombre: {producto.name}--------Descripción: {producto.description}------Precio: {producto.price}------Stock: {producto.stock}
-                        <button id={producto.id_product} onClick={() => handleDeleteProduct(producto.id_product)}>Eliminar</button>
-                        <button id={producto.id_product} onClick={() => handleEditProduct(producto.id_product)}>Editar</button>
+            {producto && (
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label>Nombre:</label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={state.name}
+                            onChange={handleChange}
+                        />
+                    </div>
+                        <label>Categoría:</label>
+                        <select
+            name="category_id"
+            value={state.category_id}
+            onChange={handleChange}
+          >
+            <option value="">Selecciona una categoría</option>
+            {categories.map(category => (
+              <option key={category.id_category} value={category.id_category}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+                    <div>
+                        <label>Descripción:</label>
+                        <input
+                            type="text"
+                            name="description"
+                            value={state.description}
+                            onChange={handleChange}
+                        />
+                        <label>Stock:</label>
+                        <input
+                            type="text"
+                            name="stock"
+                            value={state.stock}
+                            onChange={handleChange}
+                        />
+                        <label>Precio:</label>
+                        <input
+                            type="text"
+                            name="price"
+                            value={state.price}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <button type="submit">Actualizar</button>
+                </form>
+            )}
 
-                    </li>
-                ))}
-            </ul>
+            {error && <p>{error}</p>}
+            {success && <p>{success}</p>}
         </div>
-    );
+    )
 }
