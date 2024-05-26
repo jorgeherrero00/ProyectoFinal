@@ -20,11 +20,6 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->integer('phone');
-            $table->string('address', 45)->nullable();
-            $table->string('postal_code', 20)->nullable();
-            $table->string('city', 45)->nullable();
-            $table->string('province', 45)->nullable();
-            $table->string('country', 45)->nullable();
             $table->boolean('active')->default(false);
             $table->string('role', 20)->default('customer');        
             $table->timestamps();

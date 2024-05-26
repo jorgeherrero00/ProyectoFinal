@@ -62,4 +62,7 @@ Route::post('actualizarCategoria', [\App\Http\Controllers\CategoriaController::c
 Route::post('actualizarProducto', [\App\Http\Controllers\ProductoController::class, 'actualizarProducto'])->name('actualizar-producto');
 Route::post('crearProducto', [\App\Http\Controllers\ProductoController::class, 'crearProducto'])->name('crear-producto');
 Route::get('obtenerProductos', [\App\Http\Controllers\ProductoController::class, 'obtenerProductos'])->name('obtener-productos');
+
+
+Route::post('addPedido', [\App\Http\Controllers\PedidoController::class, 'addPedido'])->name('add-pedido');
 require __DIR__.'/auth.php';

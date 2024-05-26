@@ -21,8 +21,10 @@
     },
     "dependencies": {
         "@inertiajs/inertia-react": "^0.8.1",
+        "bootstrap": "^5.3.3",
         "inertiajs": "^0.0.0",
         "next": "^14.2.3",
+        "react-bootstrap": "^2.10.2",
         "react-hook-form": "^7.51.4",
         "react-router-dom": "^6.23.0"
     }
