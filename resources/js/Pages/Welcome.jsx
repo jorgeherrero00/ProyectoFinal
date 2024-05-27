@@ -26,9 +26,6 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                 <Link href='categorias'>
                                     Categorías
                                 </Link>
-                                <Link href=''>
-                                    Mi cesta
-                                </Link>
                                 <Link href='mi-cuenta'>
                                     Mi cuenta
                                 </Link>

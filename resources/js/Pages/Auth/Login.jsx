@@ -6,6 +6,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
+import { Button } from 'react-bootstrap';
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -25,6 +26,10 @@ export default function Login({ status, canResetPassword }) {
 
         post(route('login'));
     };
+
+    const handleGoogleLogin = () => {
+        window.location.href = '/auth/google';
+    }
 
     return (
         <GuestLayout>
@@ -90,12 +95,14 @@ export default function Login({ status, canResetPassword }) {
                     <PrimaryButton className="ms-4" disabled={processing}>
                         Iniciar sesión
                     </PrimaryButton>
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    <Link href={route('register')} className="ms-4">
+                    <PrimaryButton className="ms-4">
                         Registrarte
                     </PrimaryButton>
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    </Link>
+                    <Button className="ms-4" onClick={handleGoogleLogin}>
                         Google
-                    </PrimaryButton>
+                    </Button>
                 </div>
             </form>
         </GuestLayout>
