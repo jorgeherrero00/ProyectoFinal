@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('items', 45);
             $table->float('price');
             $table->string('address', 100);
+            $table->string('status', 45)->default('pendiente');
             $table->timestamps();
         });
     }

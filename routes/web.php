@@ -44,6 +44,9 @@
         return Inertia::render('Carrito/Carrito');
     })->name('Carrito/Carrito');
 
+    Route::get('/pedidos', function () {
+        return Inertia::render('Pedidos/pedidos');
+    })->name('Pedido/pedidos');
 
     Route::post('borrarProducto/', [\App\Http\Controllers\ProductoController::class, 'borrarProducto'])->name('borrar-producto');
     Route::post('agregarCarrito/', [\App\Http\Controllers\CarritoController::class, 'agregarCarrito'])->name('agregar-carrito');
@@ -69,4 +72,7 @@
 
 
     Route::post('addPedido', [\App\Http\Controllers\PedidoController::class, 'addPedido'])->middleware('auth')->name('add-pedido');
+    Route::get('pedidos', [\App\Http\Controllers\PedidoController::class, 'obtenerPedidos'])->middleware('auth')->name('obtener-pedidos');
+    Route::post('/pedidos/{idPedido}/cambiarEstado', [\App\Http\Controllers\PedidoController::class, 'cambiarEstadoPedido']);
+
     require __DIR__.'/auth.php';
