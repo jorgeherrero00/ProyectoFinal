@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { router } from "@inertiajs/react";
 
 export default function EditarCategoria({ categoria, onUpdate }) {
     const [state, setState] = useState({
@@ -31,10 +32,11 @@ export default function EditarCategoria({ categoria, onUpdate }) {
         axios.post('/actualizarCategoria', state).then((response) => {
             if (response.status == 200) {
                 setSuccess('Categoría actualizada exitosamente.');
-                    window.location.reload();
+                    router.get('/categorias');
             }
            
         }).catch((error) => {
+            console.log(error);
         setError('Error al actualizar la categoría.');
         });
 }

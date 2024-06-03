@@ -7,8 +7,10 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Button } from 'react-bootstrap';
-
+import {usePage} from '@inertiajs/react';
 export default function Login({ status, canResetPassword }) {
+    const {props} = usePage();
+    const { message } = props;
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -34,7 +36,7 @@ export default function Login({ status, canResetPassword }) {
     return (
         <GuestLayout>
             <Head title="Log in" />
-
+            {message && <div className="alert alert-warning">{message}</div>}
             {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
 
             <form onSubmit={submit}>

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Routing\Redirector;
 
 class PedidoController extends Controller
 {
@@ -20,13 +23,6 @@ class PedidoController extends Controller
 
     public function addPedido(Request $request){
         
-        $id_user = auth()->user()->id;
-        
-        if($id_user){
-            var_dump($request->all());
-        }else{
-            return Inertia::render('Login');
-        }
-
     }
+    
 }

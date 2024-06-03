@@ -21,9 +21,10 @@ export default function ListaCategorias() {
           })
           .then(function (response) {
             setBorrado('Se ha borrado correctamente');
-            window.location.reload();
+           router.get('/categorias');
           })
           .catch(function (error) {
+            console.log(error);
             setBorrado('Error al borrar la categoría');
           });
     };
@@ -39,9 +40,11 @@ export default function ListaCategorias() {
             <ul>
                 {categorias.map(categoria => (
                     <li key={categoria.id_category}>
-                        Nombre: {categoria.name}--------Descripción: {categoria.description}
-                        <button id={categoria.id_category} onClick={() => handleDeleteCategory(categoria.id_category)}>Eliminar</button>
-                        <button id={categoria.id_category} onClick={() => handleEditCategory(categoria)}>Editar</button>
+                        <p><strong>Nombre:</strong> {categoria.name}</p>
+                        <p><strong>Descripción:</strong> {categoria.description}</p>
+                        <button onClick={() => handleDeleteCategory(categoria.id_category)}>Eliminar</button>
+                        <br />
+                        <button onClick={() => handleEditCategory(categoria)}>Editar</button>
                     </li>
                 ))}
             </ul>

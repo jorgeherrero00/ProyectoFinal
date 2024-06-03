@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { router } from "@inertiajs/react";
 
 export default function EditarProducto({ producto, onUpdate }) {
     const [state, setState] = useState({
@@ -43,13 +44,13 @@ export default function EditarProducto({ producto, onUpdate }) {
         e.preventDefault();
         axios.post('/actualizarProducto', state).then((response) => {
             if (response.status == 200) {
-                setSuccess('Categoría actualizada exitosamente.');
-                    window.location.reload();
+                setSuccess('Producto actualizado exitosamente.');
+                router.get('/productos');
             }
            
         }).catch((error) => {
             console.log(error);
-        setError('Error al actualizar la categoría.');
+        setError('Error al actualizar el producto.');
         });
 }
 

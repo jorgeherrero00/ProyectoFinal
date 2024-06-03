@@ -45,7 +45,5 @@ class CategoriaController extends Controller
     public function borrarCategoria(Request $request){
         $id = $request->all()['id_category'];
         Category::destroy($id);
-        
-        return Inertia::render('Categoria/ListaCategoria');
     }
 }

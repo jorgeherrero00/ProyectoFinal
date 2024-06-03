@@ -34,7 +34,6 @@ class CarritoController extends Controller
     
 
     public function actualizarCarrito(Request $request) {
-        dd($request->all());
         session(['carrito' => $request->carrito]);
     }
     

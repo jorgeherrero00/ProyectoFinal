@@ -24,14 +24,14 @@ export default function ListaProductos() {
             });
     }, []);
 
-    const handleDeleteCategory = (id_product) => {
+    const handleDeleteProduct = (id_product) => {
         axios.post('borrarProducto/', {
             id_product: id_product,
           })
           .then(function (response) {
             setBorrado('Se ha borrado correctamente');
-            window.location.reload();
-          })
+            router.get('/productos');
+        })
           .catch(function (error) {
             setBorrado('Error al borrar el producto');
           });
@@ -51,7 +51,8 @@ export default function ListaProductos() {
             quantity: quantity,
             totalPrice: quantity * price
         }).then(function (response) {
-            console.log(response);
+            router.get('/carrito');  // Redirigir al carrito después de añadir un producto
+
         }).catch(function (error) {
             console.log(error);
         })
@@ -69,11 +70,21 @@ export default function ListaProductos() {
             <ul>
                 {productos.map(product => (
                     <li key={product.id_product}>
-                        Nombre: {product.name}--------Descripción: {product.description}------Stock: {product.stock}------Precio: {product.price}
-                        <button id={product.id_category} onClick={() => handleDeleteCategory(product.id_product)}>Eliminar</button>
-                        <button id={product.id_category} onClick={() => handleEditProducto(product)}>Editar</button>
-                        <button id={product.id_category} onClick={() => handleAddCarrito(product.id_product, product.name, product.price)}>Añadir al Carrito</button>
-                        <input type="number" placeholder="1" value={quantities[product.id_product] || 1} onChange={(event) => handleQuantityChange(event, product.id_product)}></input>                    
+                        <p><strong>Nombre:</strong> {product.name}</p>
+                        <p><strong>Descripción:</strong> {product.description}</p>
+                        <p><strong>Stock:</strong> {product.stock}</p>
+                        <p><strong>Precio:</strong> {product.price}</p>
+                        <button onClick={() => handleDeleteProduct(product.id_product)}>Eliminar</button>
+                        <br />
+                        <button onClick={() => handleEditProducto(product)}>Editar</button>
+                        <br />
+                        <button className="mr-20 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => handleAddCarrito(product.id_product, product.name, product.price)}>Añadir al Carrito</button>
+                        <input
+                            type="number"
+                            placeholder="1"
+                            value={quantities[product.id_product] || 1}
+                            onChange={(event) => handleQuantityChange(event, product.id_product)}
+                        />
                     </li>
                 ))}
             </ul>
