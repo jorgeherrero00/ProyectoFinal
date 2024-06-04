@@ -29,10 +29,6 @@ export default function Login({ status, canResetPassword }) {
         post(route('login'));
     };
 
-    const handleGoogleLogin = () => {
-        window.location.href = '/auth/google';
-    }
-
     return (
         <GuestLayout>
             <Head title="Log in" />
@@ -102,7 +98,7 @@ export default function Login({ status, canResetPassword }) {
                         Registrarte
                     </PrimaryButton>
                     </Link>
-                    <Button className="ms-4" onClick={handleGoogleLogin}>
+                    <Button className="ms-4">
                         Google
                     </Button>
                 </div>

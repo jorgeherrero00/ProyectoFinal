@@ -13,6 +13,7 @@
         return Inertia::render('Welcome', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
+            'user' => Auth::user(),
         ]);
     });
     Route::get('/dashboard', function () {

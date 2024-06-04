@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { router } from '@inertiajs/react'
-
+import Welcome from '../Welcome';
 const CrearCategoria = () => {
   const [state, setState] = useState({
     name: '',
@@ -26,6 +26,7 @@ const CrearCategoria = () => {
   }
 
   return (
+
     <div>
       <h2>Crear Categoría</h2>
       <form onSubmit={handleSubmit}>

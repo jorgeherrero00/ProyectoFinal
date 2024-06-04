@@ -10,7 +10,6 @@ const GraficaPedidosPorMes = ({ pedidos }) => {
     // Crear un objeto para contar los pedidos por mes
     const pedidosPorMes = pedidos.reduce((acc, pedido) => {
         const mes = format(parseISO(pedido.created_at), 'yyyy-MM-dd'); // Formatear a 'YYYY-MM'
-        console.log(mes);
         acc[mes] = (acc[mes] || 0) + 1;
         return acc;
     }, {});

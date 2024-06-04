@@ -17,7 +17,8 @@ class PedidoController extends Controller
 
     public function obtenerPedidos(){
         $pedidos =  Order::all();
-        return Inertia::render('Pedidos/pedidos', ['pedidos' => $pedidos]);
+        $pedidosUser = Order::where('customer_id', Auth::id())->get();
+        return Inertia::render('Pedidos/pedidos', ['pedidos' => $pedidos, 'user' => Auth::user(), 'pedidosUser' => $pedidosUser]);
 
     }
 
