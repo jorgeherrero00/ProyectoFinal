@@ -10,6 +10,8 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use App\Models\OrderLines;
 use App\Controllers\CarritoController;
+use App\Mail\OrderConfirmationMail;
+use Illuminate\Support\Facades\Mail;
 
 class PedidoController extends Controller
 {
@@ -35,44 +37,57 @@ class PedidoController extends Controller
 
     }
 
-        public function addPedido(Request $request)
-        {
-            if (Auth::check()) {
-                // Extract the 'name' values from 'carrito' and concatenate them
-                $items = [];
-                $totalPrice = 0;
-                foreach ($request->carrito as $itemGroup) {
-                    foreach ($itemGroup as $item) {
-                        $items[] = $item['name'];
-                        $totalPrice += $item['totalPrice'];
-                    }
-                }
-                $itemsString = implode(', ', $items);
-        
-                // Create the main order
-                $order = Order::create([
-                    'customer_id' => Auth::id(),
-                    'items' => $itemsString,
-                    'price' => $totalPrice,
-                    'address' => $request->direccion . ' ' . $request->codigoPostal . ' ' . $request->ciudad . ' ' . $request->provincia . ' ' . $request->pais,
-                ]);
+    public function addPedido(Request $request)
+    {
+        if (Auth::check()) {
     
-                // Create order lines for each product in the carrito
-                foreach ($request->carrito as $itemGroup) {
-                    foreach ($itemGroup as $item) {
-                        OrderLines::create([
-                            'order_id' => $order->id_order,
-                            'product_name' => $item['name'],
-                            'quantity' => $item['quantity'],
-                            'price' => $item['totalPrice'],
-                        ]);
-                    }
+            $datos = [];
+            $items = [];
+            $totalPrice = 0;
+    
+            foreach ($request->carrito as $itemGroup) {
+                foreach ($itemGroup as $item) {
+                    $items[] = $item['name'];
+                    $totalPrice += $item['totalPrice'];
                 }
-
-                session()->forget('carrito');
-            } else {
-                return response()->json(['message' => 'Tienes que iniciar sesión'], 401);
             }
+    
+            $itemsString = implode(', ', $items);
+    
+            $order = Order::create([
+                'customer_id' => Auth::id(),
+                'items' => $itemsString,
+                'price' => $totalPrice,
+                'address' => $request->direccion . ' ' . $request->codigoPostal . ' ' . $request->ciudad . ' ' . $request->provincia . ' ' . $request->pais,
+            ]);
+    
+            $datos['orderID'] = $order->id_order;
+            $datos['orderDetails'] = [];
+            $datos['address'] = $request->direccion . ' ' . $request->codigoPostal . ' ' . $request->ciudad . ' ' . $request->provincia . ' ' . $request->pais;
+        
+            foreach ($request->carrito as $itemGroup) {
+                foreach ($itemGroup as $item) {
+                    OrderLines::create([
+                        'order_id' => $order->id_order,
+                        'product_name' => $item['name'],
+                        'quantity' => $item['quantity'],
+                        'price' => $item['totalPrice'],
+                    ]);
+    
+                    $datos['orderDetails'][] = [
+                        'name' => $item['name'],
+                        'quantity' => $item['quantity'],
+                        'price' => $item['totalPrice'],
+                    ];
+                }
+            }
+    
+            Mail::to(Auth::user()->email)->send(new OrderConfirmationMail($datos));
+            session()->forget('carrito');
+        } else {
+            return response()->json(['message' => 'Tienes que iniciar sesión'], 401);
         }
+    }
+    
 
 }

@@ -9,12 +9,17 @@ use Inertia\Inertia;
 class CategoriaController extends Controller
 {
     public function crearCategoria(Request $request){
+        
+   
+        
         Category::create($request->all());
 
         return Inertia::render('Categoria/ListaCategoria');
     }
 
     public function obtenerCategorias(){
+       
+       
         return Category::all();
     }
 

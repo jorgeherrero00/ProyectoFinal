@@ -5,6 +5,12 @@
     use Illuminate\Support\Facades\Route;
     use Inertia\Inertia;
     use App\Http\Controllers\Auth\FirebaseController;
+    use App\Http\Controllers\PayPalController;
+
+    Route::post('paypal/order', [PayPalController::class, 'createOrder'])->name('paypal.order');
+    Route::post('paypal/capture', [PayPalController::class, 'captureOrder'])->name('paypal.capture');
+    Route::get('paypal/success', [PayPalController::class, 'success'])->name('paypal.success');
+    Route::get('paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
 
     Route::any('auth/google', [FirebaseController::class, 'redirectToGoogle']);
     Route::any('auth/google/callback', [FirebaseController::class, 'handleGoogleCallback']);
@@ -42,7 +48,7 @@
     })->name('Producto/ListaProducto');
 
     Route::get('/carrito', function () {
-        return Inertia::render('Carrito/Carrito');
+        return Inertia::render('Carrito/Carrito', ['user' => Auth::user()]);
     })->name('Carrito/Carrito');
 
     Route::get('/pedidos', function () {

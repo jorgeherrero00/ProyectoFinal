@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import AddressModal from './AddressModal.jsx';
+import { router } from '@inertiajs/react';
 
-export default function Carrito() {
-    
+export default function Carrito({ user }) {
     const [carrito, setCarrito] = useState([]);
     const [showModal, setShowModal] = useState(false);
 
@@ -15,13 +15,11 @@ export default function Carrito() {
             });
     }, []);
     
-
     const handleIncrement = (username, productName) => {
         const updatedCarrito = { ...carrito };
         updatedCarrito[username][productName].quantity += 1;
         updatedCarrito[username][productName].totalPrice = updatedCarrito[username][productName].quantity * updatedCarrito[username][productName].price;
         setCarrito(updatedCarrito);
-        // Actualizar la sesión con el nuevo carrito
         axios.post('/actualizarCarrito', { carrito: updatedCarrito });
     };
 
@@ -49,12 +47,16 @@ export default function Carrito() {
     };
 
     const handleComprarProductos = () => {
+        if (!user) {
+            // Redirigir a la página de login si el usuario no está autenticado
+            router.visit('/login', { method: 'get' }, { data: 'Por favor inicia sesión para continuar' });
+            return;
+        }
 
         setShowModal(true);
         const productos = [];
 
         for (const username in carrito) {
-
             for (const productName in carrito[username]) {
                 const producto = carrito[username][productName];
                 productos.push({
@@ -100,16 +102,15 @@ export default function Carrito() {
                                     </div>
                                 ))}
                                 <button onClick={handleBorrarCarrito}>Borrar Carrito</button>
-                                <button onClick={() => setShowModal(true)}>Añadir al pedido</button>
+                                <button onClick={handleComprarProductos}>Añadir al pedido</button>
                             </li>
                         ))}
                     </ul>
                 ) : (
                     <p>No hay productos en el carrito.</p>
                 )}
-                <AddressModal show={showModal} closeModal={() => setShowModal(false)} carrito={carrito} />
+                <AddressModal show={showModal} closeModal={() => setShowModal(false)} carrito={carrito} user={user} />
             </div>
         </>
     );
-    
 }

@@ -5,15 +5,13 @@ import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
 import { router } from '@inertiajs/react';
 
-function AddressModal({ show, closeModal, carrito }) {
+function AddressModal({ show, closeModal, carrito,user }) {
   const [direccion, setDireccion] = useState('');
   const [codigoPostal, setCodigoPostal] = useState('');
   const [ciudad, setCiudad] = useState('');
   const [provincia, setProvincia] = useState('');
   const [pais, setPais] = useState('');
-  const [metodoPago, setMetodoPago] = useState('');
   const [seccionActual, setSeccionActual] = useState('carrito');
-
 
   const guardarDatos = () => {
     axios.post(route('add-pedido'), {
@@ -46,6 +44,7 @@ function AddressModal({ show, closeModal, carrito }) {
 
   const mostrarSeccionPago = () => {
     setSeccionActual('pago');
+    loadPayPalScript();
   };
 
   useEffect(() => {
@@ -53,6 +52,48 @@ function AddressModal({ show, closeModal, carrito }) {
       closeModal();
     }
   }, [show, closeModal]);
+
+  const loadPayPalScript = async () => {
+    const script = document.createElement('script');
+    script.src = `https://www.paypal.com/sdk/js?client-id=${import.meta.env.VITE_PAYPAL_SANDBOX_CLIENT_ID}&currency=USD`;
+    script.addEventListener('load', () => {
+      window.paypal.Buttons({
+        createOrder: function(data, actions) {
+          return fetch('/paypal/order', {
+            method: 'post',
+            headers: {
+              'content-type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+          }).then(function(res) {
+            return res.json();
+          }).then(function(orderData) {
+            return orderData.id;
+          });
+        },
+        onApprove: function(data, actions) {
+          return fetch('/paypal/capture', {
+            method: 'post',
+            headers: {
+              'content-type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+              orderID: data.orderID
+            })
+          }).then(function(res) {
+            return res.json();
+          }).then(function(details) {
+            router.get('/pedidos');
+          });
+        },
+        onCancel: function(data) {
+          window.location.href = '/paypal/cancel';
+        }
+      }).render('#paypal-button-container');
+    });
+    document.body.appendChild(script);
+  };
 
   return (
     <Modal show={show} onHide={closeModal}>
@@ -135,19 +176,7 @@ function AddressModal({ show, closeModal, carrito }) {
           </Form>
         ) : (
           // Sección de Información de Pago
-          <Form>
-            <Form.Group className="mb-3" controlId="formMetodoPago">
-              <Form.Label>Método de Pago</Form.Label>
-              <Form.Control
-                as="select"
-                value={metodoPago}
-                onChange={(e) => setMetodoPago(e.target.value)}
-                required
-              >
-                <option value="paypal">PayPal</option>
-              </Form.Control>
-            </Form.Group>
-          </Form>
+          <div id="paypal-button-container"></div>
         )}
       </Modal.Body>
       <Modal.Footer>

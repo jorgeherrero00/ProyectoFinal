@@ -1,6 +1,7 @@
 import { Link, Head } from '@inertiajs/react';
 import logo from '../../img/Logo.png';
 
+
 export default function Welcome({ auth, laravelVersion, phpVersion, user }) {
     const handleImageError = () => {
         document.getElementById('screenshot-container')?.classList.add('!hidden');
