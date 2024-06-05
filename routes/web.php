@@ -4,10 +4,10 @@
     use Illuminate\Foundation\Application;
     use Illuminate\Support\Facades\Route;
     use Inertia\Inertia;
-    use App\Http\Controllers\Auth\GoogleController;
+    use App\Http\Controllers\Auth\FirebaseController;
 
-    Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
-    Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+    Route::any('auth/google', [FirebaseController::class, 'redirectToGoogle']);
+    Route::any('auth/google/callback', [FirebaseController::class, 'handleGoogleCallback']);
 
     Route::get('/', function () {
         return Inertia::render('Welcome', [
