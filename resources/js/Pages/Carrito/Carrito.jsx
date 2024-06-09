@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import AddressModal from './AddressModal.jsx';
 import { router } from '@inertiajs/react';
+import Navigation from "@/Components/Navigation.jsx";
 
 export default function Carrito({ user }) {
     const [carrito, setCarrito] = useState([]);
@@ -48,7 +49,6 @@ export default function Carrito({ user }) {
 
     const handleComprarProductos = () => {
         if (!user) {
-            // Redirigir a la página de login si el usuario no está autenticado
             router.visit('/login', { method: 'get' }, { data: 'Por favor inicia sesión para continuar' });
             return;
         }
@@ -73,7 +73,6 @@ export default function Carrito({ user }) {
         axios.post('/addPedido', { productos: productos })
             .then(response => {
                 console.log(response.data);
-                // Aquí puedes manejar la respuesta del servidor después de la compra, por ejemplo, limpiar el carrito
                 setCarrito([]);
             })
             .catch(error => {
@@ -84,6 +83,7 @@ export default function Carrito({ user }) {
     return (
         <>
             <div>
+                <Navigation user={user} />
                 <h1 className="text-3xl">Carrito</h1>
                 {Object.keys(carrito).length > 0 ? (
                     <ul>
@@ -92,6 +92,7 @@ export default function Carrito({ user }) {
                                 {Object.keys(carrito[username]).map((productName, productIndex) => (
                                     <div key={productIndex}>
                                         <h3>Producto: {productName}</h3>
+                                        <img src={`/storage/${carrito[username][productName].image_path}`} alt={productName} width="100" />
                                         <p>ID: {carrito[username][productName].id}</p>
                                         <p>Precio: {carrito[username][productName].price}</p>
                                         <p>Cantidad: {carrito[username][productName].quantity}</p>

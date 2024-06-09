@@ -1,10 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import Welcome from './Welcome';
-export default function Dashboard({ auth }) {
+import Navigation from '@/Components/Navigation';
+export default function Dashboard({ auth, user }) {
     return (
         <>
-        <Welcome auth={auth} />
+        <Navigation user={user} />
         <AuthenticatedLayout
 
             user={auth.user}

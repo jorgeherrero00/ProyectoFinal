@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
-
-const CrearProducto = () => {
+import Navigation from '@/Components/Navigation';
+const CrearProducto = ({user}) => {
   const [state, setState] = useState({
     name: '',
     category_id: '',
     description: '',
     price: '',
-    stock: ''
+    stock: '',
+    image: null
   });
 
   const [categories, setCategories] = useState([]);
@@ -19,33 +20,48 @@ const CrearProducto = () => {
       .then(data => setCategories(data))
       .catch(error => console.log(error));
   }, []);
-  console.log(categories)
+
   const handleChange = (e) => {
-    setState({
-      ...state,
-      [e.target.name]: e.target.value
-    });
-  }
+    const { name, value, files } = e.target;
+    if (name === 'image') {
+      setState({
+        ...state,
+        image: files[0]
+      });
+    } else {
+      setState({
+        ...state,
+        [name]: value
+      });
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Nombre:', state.name);
-    console.log('Categoria:', state.category_id);
-    console.log('Descripción:', state.description);
-    console.log('Precio:', state.price);
-    console.log('Stock:', state.stock);
-    router.post('/crearProducto', state)
+    const formData = new FormData();
+    for (const key in state) {
+      formData.append(key, state[key]);
+    }
+
+    router.post('/crearProducto', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
     setState({
       name: '',
       description: '',
       category_id: '',
       price: '',
-      stock: ''
+      stock: '',
+      image: null
     });
-  }
+  };
 
   return (
     <div>
+      <Navigation user={user} />
       <h2>Crear Producto</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -95,6 +111,14 @@ const CrearProducto = () => {
             type="text"
             name="stock"
             value={state.stock}
+            onChange={handleChange}
+          />
+        </div>
+        <div>
+          <label>Imagen:</label>
+          <input
+            type="file"
+            name="image"
             onChange={handleChange}
           />
         </div>

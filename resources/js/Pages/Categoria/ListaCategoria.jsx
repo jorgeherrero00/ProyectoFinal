@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { router } from '@inertiajs/react'
 import EditarCategoria from './EditarCategoria.jsx';
 import axios from "axios";
-import Welcome from "../Welcome.jsx";
-export default function ListaCategorias() {
+import Navigation from "@/Components/Navigation.jsx";
+export default function ListaCategorias({user}) {
     const [categorias, setCategorias] = useState([]);
     const [modoEdicion, setModoEdicion] = useState(false);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
@@ -36,8 +36,8 @@ export default function ListaCategorias() {
 
     return (
         <div>
-            <Welcome />
-            <h1>Lista de Categorías</h1>
+                <Navigation user={user} />
+                <h1>Lista de Categorías</h1>
             <ul>
                 {categorias.map(categoria => (
                     <li key={categoria.id_category}>

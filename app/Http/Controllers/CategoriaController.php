@@ -23,9 +23,19 @@ class CategoriaController extends Controller
         return Category::all();
     }
 
-    public function obtenerCategoria(Request $request){
-        $id = $request->all()['id'];
-       return   Category::find($id);
+    public function obtenerCategoria($id_category) {
+        $categoria = Category::find($id_category);
+        if ($categoria) {
+            return response()->json($categoria);
+        } else {
+            return response()->json(['error' => 'Categoría no encontrada'], 404);
+        }
+    }
+
+    public function buscarCategorias(Request $request) {
+        $search = $request->input('search');
+        $categorias = Category::where('name', 'like', '%' . $search . '%')->get();
+        return response()->json($categorias);
     }
 
     public function actualizarCategoria(Request $request){
