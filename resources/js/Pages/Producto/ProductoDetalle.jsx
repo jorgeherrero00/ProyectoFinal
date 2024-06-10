@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import Navigation from "@/Components/Navigation.jsx";
 import { router } from "@inertiajs/react";
 import axios from "axios";
+import Footer from "@/Components/Footer";
 
 export default function ProductoDetalle({ user, producto }) {
     const [quantity, setQuantity] = useState(1);
-
+    const [categoria, setCategoria] = useState({});
     const handleAddCarrito = () => {
         axios.post('/agregarCarrito', {
             id_product: producto.id_product,
@@ -21,25 +22,41 @@ export default function ProductoDetalle({ user, producto }) {
         });
     };
 
+    const obtenerCategoriaProducto = () => {
+        axios.get(`/obtenerCategoria/${producto.category_id}`)
+            .then(response => {
+                setCategoria(response.data);
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.error("Error al obtener los detalles de la categoría:", error);
+            });
+    };
+    
     const handleQuantityChange = (event) => {
         setQuantity(parseInt(event.target.value));
     };
 
     return (
+        <>
         <div>
             <Navigation user={user} />
-            <h1>Detalles del Producto</h1>
-            <div>
-                <p><strong>Nombre:</strong> {producto.name}</p>
-                <p><strong>Descripción:</strong> {producto.description}</p>
-                <p><strong>Stock:</strong> {producto.stock}</p>
-                <p><strong>Precio:</strong> {producto.price}</p>
+            <div className="mt-8 mb-8 ml-20 flex flex-row">
+                <div>
                 {producto.image_path && (
                     <div>
-                        <img src={`/storage/${producto.image_path}`} alt={producto.name} width="200" />
+                        <img src={`/storage/${producto.image_path}`} alt={producto.name} width="500" />
                     </div>
                 )}
+                </div>
+                <div className="ml-20">
+                <p> {producto.name}</p>
+                <p>{producto.price}</p>
+                </div>
             </div>
+
+            <p> {producto.description}</p>
+
             <h2>Reseñas</h2>
             <div>
                 {producto.reviews && producto.reviews.length > 0 ? (
@@ -69,5 +86,7 @@ export default function ProductoDetalle({ user, producto }) {
                 Volver a la Lista de Productos
             </button>
         </div>
+            <Footer />
+        </>
     );
 }
