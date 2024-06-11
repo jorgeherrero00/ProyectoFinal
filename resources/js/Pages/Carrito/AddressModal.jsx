@@ -5,38 +5,13 @@ import Modal from 'react-bootstrap/Modal';
 import axios from 'axios';
 import { router } from '@inertiajs/react';
 
-function AddressModal({ show, closeModal, carrito,user }) {
+function AddressModal({ show, closeModal, carrito, user }) {
   const [direccion, setDireccion] = useState('');
   const [codigoPostal, setCodigoPostal] = useState('');
   const [ciudad, setCiudad] = useState('');
   const [provincia, setProvincia] = useState('');
   const [pais, setPais] = useState('');
   const [seccionActual, setSeccionActual] = useState('carrito');
-
-  const guardarDatos = () => {
-    axios.post(route('add-pedido'), {
-      carrito: carrito,
-      direccion: direccion,
-      codigoPostal: codigoPostal,
-      ciudad: ciudad,
-      provincia: provincia,
-      pais: pais
-    })
-    .then(response => {
-      console.log(response);
-      // Manejar la respuesta del servidor
-    })
-    .catch(error => {
-      if (error.response.status === 401) {
-        // Redirigir a la página de login si el usuario no está autenticado
-        router.visit('/login', { method: 'get' }, {data: 'Por favor inicia sesión para continuar'});
-      } else {
-        console.error(error);
-      }
-    });
-
-    closeModal();
-  };
 
   const mostrarSeccionDireccion = () => {
     setSeccionActual('direccion');
@@ -64,7 +39,15 @@ function AddressModal({ show, closeModal, carrito,user }) {
             headers: {
               'content-type': 'application/json',
               'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
+            },
+            body: JSON.stringify({
+              carrito: carrito,
+              direccion: direccion,
+              codigoPostal: codigoPostal,
+              ciudad: ciudad,
+              provincia: provincia,
+              pais: pais
+            })
           }).then(function(res) {
             return res.json();
           }).then(function(orderData) {
@@ -197,9 +180,6 @@ function AddressModal({ show, closeModal, carrito,user }) {
           <>
             <Button variant="secondary" onClick={closeModal}>
               Cerrar
-            </Button>
-            <Button variant="primary" onClick={guardarDatos}>
-              Comprar
             </Button>
           </>
         )}

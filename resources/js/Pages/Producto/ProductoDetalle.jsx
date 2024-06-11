@@ -7,9 +7,11 @@ import Footer from "@/Components/Footer";
 export default function ProductoDetalle({ user, producto }) {
     const [quantity, setQuantity] = useState(1);
     const [categoria, setCategoria] = useState({});
+
     useEffect(() => {
         obtenerCategoriaProducto();
     }, []);
+
     const handleAddCarrito = () => {
         axios.post('/agregarCarrito', {
             id_product: producto.id_product,
@@ -35,9 +37,21 @@ export default function ProductoDetalle({ user, producto }) {
                 console.error("Error al obtener los detalles de la categoría:", error);
             });
     };
-    
+
     const handleQuantityChange = (event) => {
         setQuantity(parseInt(event.target.value));
+    };
+
+    const renderStars = (rating) => {
+        const stars = [];
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                stars.push(<span key={i} className="text-yellow-500">&#9733;</span>); // filled star
+            } else {
+                stars.push(<span key={i} className="text-gray-500">&#9734;</span>); // empty star
+            }
+        }
+        return stars;
     };
 
     return (
@@ -67,7 +81,7 @@ export default function ProductoDetalle({ user, producto }) {
                             <div key={review.id_review}>
                                 <p><strong>Título:</strong> {review.title}</p>
                                 <p><strong>Descripción:</strong> {review.description}</p>
-                                <p><strong>Calificación:</strong> {review.rating}</p>
+                                <p><strong>Calificación:</strong> {renderStars(review.rating)}</p>
                             </div>
                         ))
                     ) : (

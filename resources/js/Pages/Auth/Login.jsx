@@ -78,6 +78,7 @@ export default function Login({ status, canResetPassword, user }) {
       });
   };
   return (
+    <>
     <GuestLayout>
       
       <Navigation user={props.user} /> <Head title="Log in" />
@@ -214,7 +215,8 @@ export default function Login({ status, canResetPassword, user }) {
           </div>
         </form>
       </div>
-      <Footer />
     </GuestLayout>
+      <Footer />
+      </>
   );
 }
