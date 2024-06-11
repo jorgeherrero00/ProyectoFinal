@@ -33,7 +33,7 @@ const Navigation = ({ user }) => {
                     <img src={logo} alt="Logo" className="w-24 h-24 object-contain" id='logo-home' />
                 </Link>
                 <div className="flex space-x-4 items-center">
-                    <Link href='categorias' className="hover:underline">Categorías</Link>
+                    <Link href="/categorias" className="hover:underline">Categorías</Link>
                     <div className="relative flex items-center">
                         <button onClick={toggleSearch} className="hover:underline focus:outline-none">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -64,19 +64,19 @@ const Navigation = ({ user }) => {
                         )}
                     </div>
                     {user ? (
-                        <Link href='dashboard' className="hover:underline">Dashboard</Link>
+                        <Link href="/dashboard" className="hover:underline">Dashboard</Link>
                     ) : (
-                        <Link href='mi-cuenta' className="hover:underline">Mi cuenta</Link>
+                        <Link href="/mi-cuenta" className="hover:underline">Mi cuenta</Link>
                     )}
                     {user && user['role'] === 'admin' && (
                         <>
-                            <Link href='crear-categoria' className="hover:underline">Crear categoría</Link>
-                            <Link href='crear-producto' className="hover:underline">Crear producto</Link>
+                            <Link href="/crear-categoria" className="hover:underline">Crear categoría</Link>
+                            <Link href="/crear-producto" className="hover:underline">Crear producto</Link>
                         </>
                     )}
-                    <Link href='productos' className="hover:underline">Productos</Link>
-                    <Link href='carrito' className="hover:underline">Mi cesta</Link>
-                    <Link href='pedidos' className="hover:underline">Pedidos</Link>
+                    <Link href="/productos" className="hover:underline">Productos</Link>
+                    <Link href="/carrito" className="hover:underline">Mi cesta</Link>
+                    <Link href="/pedidos" className="hover:underline">Pedidos</Link>
                 </div>
             </nav>
         </header>

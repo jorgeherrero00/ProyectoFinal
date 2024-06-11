@@ -56,16 +56,19 @@ export default function ListaProductos({ user }) {
                                 <img src={`/storage/${product.image_path}`} alt={product.name} width="100" />
                             </div>
                         )}
-                        <button onClick={(e) => { e.stopPropagation(); handleDeleteProduct(product.id_product); }}>Eliminar</button>
-                        <br />
-                        <button onClick={(e) => { e.stopPropagation(); handleEditProducto(product); }}>Editar</button>
+                        {user && user['role'] === 'admin' && (
+                            <>
+                                <button onClick={(e) => { e.stopPropagation(); handleDeleteProduct(product.id_product); }}>Eliminar</button>
+                                <br />
+                                <button onClick={(e) => { e.stopPropagation(); handleEditProducto(product); }}>Editar</button>
+                            </>
+                        )}
                     </li>
                 ))}
             </ul>
             {modoEdicion && (
                 <EditarProducto producto={productoSeleccionado} />
             )}
-
             {borrado && (
                 <p>{borrado}</p>
             )}

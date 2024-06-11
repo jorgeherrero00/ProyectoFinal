@@ -3,10 +3,9 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Navigation from "@/Components/Navigation.jsx";
 
-const DetalleCategoria = ({ user,category_id }) => {
-    const { id_category } = category_id;
+const DetalleCategoria = ({ user,id_category }) => {
+    const { categoria_id } = id_category;
     const [categoria, setCategoria] = useState(null);
-
     useEffect(() => {
         axios.get(`/obtenerCategoria/${id_category}`)
             .then(response => {
@@ -15,7 +14,7 @@ const DetalleCategoria = ({ user,category_id }) => {
             .catch(error => {
                 console.error("Error al obtener los detalles de la categoría:", error);
             });
-    }, [id_category]);
+    }, [categoria_id]);
 
     if (!categoria) {
         return <div>Cargando...</div>;

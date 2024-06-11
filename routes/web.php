@@ -42,8 +42,11 @@
         return Inertia::render('Categoria/ListaCategoria', ['user' => Auth::user()]);
     })->name('Categoria/ListaCategoria');
 
-    Route::get('/categorias/{id_category}', function(){
-        return Inertia::render('Categoria/DetalleCategoria', ['user' => Auth::user(), 'category_id' => 1]);
+    Route::get('/categorias/{id_category}', function ($id_category) {
+        return Inertia::render('Categoria/DetalleCategoria', [
+            'user' => Auth::user(),
+            'id_category' => $id_category,
+        ]);
     })->name('Categoria/DetalleCategoria');
     Route::get('/productos', function () {
         
