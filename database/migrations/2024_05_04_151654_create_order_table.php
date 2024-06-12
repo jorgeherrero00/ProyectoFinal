@@ -15,9 +15,9 @@ return new class extends Migration
             $table->increments('id_order');
             $table->integer('customer_id')->unsigned();
             $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('items', 45);
+            $table->string('items', 150);
             $table->float('price');
-            $table->string('address', 100);
+            $table->string('address', 255);
             $table->string('status', 45)->default('pendiente');
             $table->timestamps();
         });

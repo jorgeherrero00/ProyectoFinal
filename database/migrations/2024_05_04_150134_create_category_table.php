@@ -10,7 +10,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->increments('id_category');
             $table->string('name', 45);
-            $table->string('description', 45);
+            $table->string('description', 200);
             $table->string('photo')->nullable();  // Añadir esta línea
             $table->timestamps();
         });

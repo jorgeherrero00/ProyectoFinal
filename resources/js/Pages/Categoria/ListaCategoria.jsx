@@ -46,8 +46,8 @@ export default function ListaCategorias({ user }) {
             <h1 className="text-center text-3xl font-bold mb-4 mt-8">Lista de Categorías</h1>
             <ul className="list-disc list-inside mb-8 max-h-96 overflow-auto flex flex-wrap flex-row justify-center gap-4 py-4 m">
                 {categorias.map(categoria => (
-                    <li className="w-auto rounded-lg border bg-white border-gray-300 p-4 flex justify-center flex-col items-center text-black" key={categoria.id_category} onClick={() => handleCategoryClick(categoria.id_category)} style={{ cursor: 'pointer' }}>
-                        <img src={`/storage/${categoria.photo}`} alt={categoria.name} width="200" />
+                    <li className="mx-4 w-auto rounded-lg border bg-white border-gray-300 p-4 flex justify-center flex-col items-center text-black hover:scale-105 transition duration-300 cursor-pointer" key={categoria.id_category} onClick={() => handleCategoryClick(categoria.id_category)} style={{ cursor: 'pointer' }}>
+                        <img src={`/storage/${categoria.photo}`} alt={categoria.name} width="200" className="mb-4" />
                         <p>{categoria.name}</p>
                         <p>{categoria.description}</p>
                         <div className="flex gap-2">

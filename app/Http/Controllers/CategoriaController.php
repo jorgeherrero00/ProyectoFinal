@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class CategoriaController extends Controller
 {
@@ -47,14 +48,24 @@ class CategoriaController extends Controller
         $id = $datos['id'];
         $name = $datos['name'];
         $description = $datos['description'];
+
         $category = Category::find($id);
         if ($category) {
             $category->name = $name;
             $category->description = $description;
-            $category->save();
-            if ($category->save()) {
-                return response()->json(['success' => 'Categoría actualizada'], 200);
+
+            if ($request->hasFile('photo')) {
+                // Delete old photo if exists
+                if ($category->photo) {
+                    Storage::disk('public')->delete($category->photo);
+                }
+                // Store new photo
+                $category->photo = $request->file('photo')->store('categories', 'public');
             }
+
+            $category->save();
+
+            return response()->json(['success' => 'Categoría actualizada'], 200);
         } else {
             return response()->json(['error' => 'Categoría no encontrada'], 404);
         }
