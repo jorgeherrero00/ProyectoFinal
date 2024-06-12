@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import { router } from '@inertiajs/react';
 export default function ProductosTrending() {
     const [productos, setProductos] = useState([]);
 
@@ -15,6 +15,9 @@ export default function ProductosTrending() {
             });
     }, []);
 
+    const handleProductClick = (id_product) => {
+        router.get(`/producto/${id_product}`);
+    }
     return (
         <>
             <div className="flex flex-col justify-center items-center mt-20">
@@ -24,7 +27,7 @@ export default function ProductosTrending() {
 
                <div id='random_products' className='flex flex-wrap'>
                    {productos.map(producto => (
-                       <div key={producto.id_product} className="p-4 hover:scale-105 transition duration-300 cursor-pointer">
+                       <div key={producto.id_product} onClick={() => handleProductClick(producto.id_product)} style={{ cursor: 'pointer' }} className="p-4 hover:scale-105 transition duration-300 cursor-pointer">
                            {producto.image_path && (
                             <div>
                                 <img src={`/storage/${producto.image_path}`} alt={producto.name} width="200" className='bg-white p-2 mx-auto ' />

@@ -12,12 +12,28 @@ function AddressModal({ show, closeModal, carrito, user }) {
   const [provincia, setProvincia] = useState('');
   const [pais, setPais] = useState('');
   const [seccionActual, setSeccionActual] = useState('carrito');
+  const [errorMensajes, setErrorMensajes] = useState({});
 
   const mostrarSeccionDireccion = () => {
     setSeccionActual('direccion');
   };
 
   const mostrarSeccionPago = () => {
+    const nuevosErrores = {};
+
+    if (!direccion) nuevosErrores.direccion = 'La dirección es obligatoria.';
+    if (!codigoPostal) nuevosErrores.codigoPostal = 'El código postal es obligatorio.';
+    else if (!/^\d+$/.test(codigoPostal)) nuevosErrores.codigoPostal = 'El código postal debe ser un número.';
+    if (!ciudad) nuevosErrores.ciudad = 'La ciudad es obligatoria.';
+    if (!provincia) nuevosErrores.provincia = 'La provincia es obligatoria.';
+    if (!pais) nuevosErrores.pais = 'El país es obligatorio.';
+
+    if (Object.keys(nuevosErrores).length > 0) {
+      setErrorMensajes(nuevosErrores);
+      return;
+    }
+
+    setErrorMensajes({});
     setSeccionActual('pago');
     loadPayPalScript();
   };
@@ -25,9 +41,14 @@ function AddressModal({ show, closeModal, carrito, user }) {
   useEffect(() => {
     if (!show) {
       closeModal();
+      document.body.style.overflow = 'auto';
+    }else{
+      document.body.style.overflow = 'auto';
+
     }
   }, [show, closeModal]);
 
+  
   const loadPayPalScript = async () => {
     const script = document.createElement('script');
     script.src = `https://www.paypal.com/sdk/js?client-id=${import.meta.env.VITE_PAYPAL_SANDBOX_CLIENT_ID}&currency=USD`;
@@ -79,7 +100,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
   };
 
   return (
-    <Modal show={show} onHide={closeModal}>
+    <Modal show={show} onHide={closeModal} className='mb-8'>
       <Modal.Header closeButton>
         <Modal.Title>
           {seccionActual === 'carrito' ? 'Carrito de Compras' : seccionActual === 'direccion' ? 'Dirección de Envío' : 'Información de Pago'}
@@ -115,6 +136,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
                 onChange={(e) => setDireccion(e.target.value)}
                 required
               />
+              {errorMensajes.direccion && <p style={{ color: 'red' }}>{errorMensajes.direccion}</p>}
             </Form.Group>
             <Form.Group className="mb-3" controlId="formCodigoPostal">
               <Form.Label>Código Postal</Form.Label>
@@ -125,6 +147,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
                 onChange={(e) => setCodigoPostal(e.target.value)}
                 required
               />
+              {errorMensajes.codigoPostal && <p style={{ color: 'red' }}>{errorMensajes.codigoPostal}</p>}
             </Form.Group>
             <Form.Group className="mb-3" controlId="formCiudad">
               <Form.Label>Ciudad</Form.Label>
@@ -135,6 +158,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
                 onChange={(e) => setCiudad(e.target.value)}
                 required
               />
+              {errorMensajes.ciudad && <p style={{ color: 'red' }}>{errorMensajes.ciudad}</p>}
             </Form.Group>
             <Form.Group className="mb-3" controlId="formProvincia">
               <Form.Label>Provincia</Form.Label>
@@ -145,6 +169,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
                 onChange={(e) => setProvincia(e.target.value)}
                 required
               />
+              {errorMensajes.provincia && <p style={{ color: 'red' }}>{errorMensajes.provincia}</p>}
             </Form.Group>
             <Form.Group className="mb-3" controlId="formPais">
               <Form.Label>País</Form.Label>
@@ -155,6 +180,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
                 onChange={(e) => setPais(e.target.value)}
                 required
               />
+              {errorMensajes.pais && <p style={{ color: 'red' }}>{errorMensajes.pais}</p>}
             </Form.Group>
           </Form>
         ) : (

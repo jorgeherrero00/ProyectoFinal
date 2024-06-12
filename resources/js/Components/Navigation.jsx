@@ -27,7 +27,7 @@ const Navigation = ({ user }) => {
     }, [searchTerm]);
 
     return (
-        <header className="bg-black text-white">
+        <header className="bg-black text-white ">
             <nav className="flex items-center justify-between p-4 max-w-screen-xl mx-auto">
                 <Link href="/">
                     <img src={logo} alt="Logo" className="w-24 h-24 object-contain" id='logo-home' />

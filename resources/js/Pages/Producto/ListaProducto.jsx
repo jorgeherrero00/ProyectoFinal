@@ -3,6 +3,7 @@ import { router } from '@inertiajs/react';
 import EditarProducto from './EditarProducto.jsx';
 import axios from "axios";
 import Navigation from "@/Components/Navigation.jsx";
+import Footer from "@/Components/Footer.jsx";
 
 export default function ListaProductos({ user }) {
     const [productos, setProductos] = useState([]);
@@ -41,6 +42,7 @@ export default function ListaProductos({ user }) {
     }
 
     return (
+        <>
         <div>
             <Navigation user={user} />
             <h1>Lista de Productos</h1>
@@ -73,5 +75,7 @@ export default function ListaProductos({ user }) {
                 <p>{borrado}</p>
             )}
         </div>
+        <Footer />
+        </>
     );
 }

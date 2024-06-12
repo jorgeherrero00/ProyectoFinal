@@ -3,6 +3,7 @@ import { router } from '@inertiajs/react';
 import EditarCategoria from './EditarCategoria.jsx';
 import axios from "axios";
 import Navigation from "@/Components/Navigation.jsx";
+import Footer from "@/Components/Footer.jsx";
 export default function ListaCategorias({ user }) {
     const [categorias, setCategorias] = useState([]);
     const [modoEdicion, setModoEdicion] = useState(false);
@@ -39,21 +40,26 @@ export default function ListaCategorias({ user }) {
     };
 
     return (
+        <>
         <div>
             <Navigation user={user} />
-            <h1>Lista de Categorías</h1>
-            <ul>
+            <h1 className="text-center text-3xl font-bold mb-4 mt-8">Lista de Categorías</h1>
+            <ul className="list-disc list-inside mb-8 max-h-96 overflow-auto flex flex-wrap flex-row justify-center gap-4 py-4 m">
                 {categorias.map(categoria => (
-                    <li key={categoria.id_category} onClick={() => handleCategoryClick(categoria.id_category)} style={{ cursor: 'pointer' }}>
-                        <p><strong>Nombre:</strong> {categoria.name}</p>
-                        <p><strong>Descripción:</strong> {categoria.description}</p>
+                    <li className="w-auto rounded-lg border bg-white border-gray-300 p-4 flex justify-center flex-col items-center text-black" key={categoria.id_category} onClick={() => handleCategoryClick(categoria.id_category)} style={{ cursor: 'pointer' }}>
+                        <img src={`/storage/${categoria.photo}`} alt={categoria.name} width="200" />
+                        <p>{categoria.name}</p>
+                        <p>{categoria.description}</p>
+                        <div className="flex gap-2">
                         {user && user['role'] === 'admin' && (
                             <>
-                                <button onClick={(e) => { e.stopPropagation(); handleDeleteCategory(categoria.id_category); }}>Eliminar</button>
+                                <button className="w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg  hover:border-2 hover:border-primary hover:text-primary transition duration-300" onClick={(e) => { e.stopPropagation(); handleDeleteCategory(categoria.id_category); }}>Eliminar</button>
                                 <br />
-                                <button onClick={(e) => { e.stopPropagation(); handleEditCategory(categoria); }}>Editar</button>
+                                <button className="w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg  hover:border-2 hover:border-primary hover:text-primary transition duration-300"onClick={(e) => { e.stopPropagation(); handleEditCategory(categoria); }}>Editar</button>
                             </>
                         )}
+                        </div>
+                       
                     </li>
                 ))}
             </ul>
@@ -64,5 +70,7 @@ export default function ListaCategorias({ user }) {
                 <p>{borrado}</p>
             )}
         </div>
+        <Footer />
+        </>
     );
 }
