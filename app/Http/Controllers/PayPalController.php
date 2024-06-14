@@ -5,9 +5,7 @@ use Illuminate\Http\Request;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
-use App\Models\OrderLines;
-use App\Mail\OrderConfirmationMail;
-use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\PedidoController;
 
 class PayPalController extends Controller
 {
@@ -16,6 +14,8 @@ class PayPalController extends Controller
         $provider = new PayPalClient;
         $provider->setApiCredentials(config('paypal'));
         $paypalToken = $provider->getAccessToken();
+
+        $total = $request->input('total');
 
         $order = $provider->createOrder([
             "intent" => "CAPTURE",
@@ -26,8 +26,8 @@ class PayPalController extends Controller
             "purchase_units" => [
                 [
                     "amount" => [
-                        "currency_code" => "USD",
-                        "value" => "100.00" // Reemplazar con la cantidad real
+                        "currency_code" => "EUR",
+                        "value" => number_format($total, 2, '.', '') // Utiliza el total del carrito
                     ]
                 ]
             ]
@@ -62,47 +62,10 @@ class PayPalController extends Controller
         $provincia = session('provincia');
         $pais = session('pais');
 
-        // Almacenar el pedido en la base de datos
+        // Almacenar el pedido en la base de datos y enviar correo
         if (Auth::check()) {
-            $items = [];
-            $totalPrice = 0;
-
-            foreach ($carrito as $itemGroup) {
-                foreach ($itemGroup as $item) {
-                    $items[] = $item['name'];
-                    $totalPrice += $item['totalPrice'];
-                }
-            }
-
-            $itemsString = implode(', ', $items);
-
-            $order = Order::create([
-                'customer_id' => Auth::id(),
-                'items' => $itemsString,
-                'price' => $totalPrice,
-                'address' => $direccion . ' ' . $codigoPostal . ' ' . $ciudad . ' ' . $provincia . ' ' . $pais,
-            ]);
-
-            foreach ($carrito as $itemGroup) {
-                foreach ($itemGroup as $item) {
-                    OrderLines::create([
-                        'order_id' => $order->id_order,
-                        'product_name' => $item['name'],
-                        'quantity' => $item['quantity'],
-                        'price' => $item['totalPrice'],
-                    ]);
-                }
-            }
-
-            // Enviar correo de confirmación
-            Mail::to(Auth::user()->email)->send(new OrderConfirmationMail([
-                'orderID' => $order->id_order,
-                'orderDetails' => $carrito,
-                'address' => $direccion . ' ' . $codigoPostal . ' ' . $ciudad . ' ' . $provincia . ' ' . $pais
-            ]));
-
-            // Limpiar la sesión
-            session()->forget(['carrito', 'direccion', 'codigoPostal', 'ciudad', 'provincia', 'pais']);
+            $pedidoController = new PedidoController();
+            $pedidoController->addPedido($carrito, $direccion, $codigoPostal, $ciudad, $provincia, $pais);
         }
 
         return response()->json($capture);

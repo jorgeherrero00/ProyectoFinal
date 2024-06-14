@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 import { router } from '@inertiajs/react';
 import EditarCategoria from './EditarCategoria.jsx';
-import axios from "axios";
 import Navigation from "@/Components/Navigation.jsx";
 import Footer from "@/Components/Footer.jsx";
+
 export default function ListaCategorias({ user }) {
     const [categorias, setCategorias] = useState([]);
-    const [modoEdicion, setModoEdicion] = useState(false);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
     const [borrado, setBorrado] = useState(null);
+    const [modoEdicion, setModoEdicion] = useState(false);
 
     useEffect(() => {
         fetch('/obtenerCategorias')
@@ -31,8 +32,8 @@ export default function ListaCategorias({ user }) {
     };
 
     const handleEditCategory = (categoria) => {
-        setModoEdicion(prevModoEdicion => (categoriaSeleccionada === categoria && prevModoEdicion) ? !prevModoEdicion : true);
         setCategoriaSeleccionada(categoria);
+        setModoEdicion(true);
     };
 
     const handleCategoryClick = (id_category) => {
@@ -41,36 +42,32 @@ export default function ListaCategorias({ user }) {
 
     return (
         <>
-        <div>
             <Navigation user={user} />
-            <h1 className="text-center text-3xl font-bold mb-4 mt-8">Lista de Categorías</h1>
-            <ul className="list-disc list-inside mb-8 max-h-96 overflow-auto flex flex-wrap flex-row justify-center gap-4 py-4 m">
-                {categorias.map(categoria => (
-                    <li className="mx-4 w-auto rounded-lg border bg-white border-gray-300 p-4 flex justify-center flex-col items-center text-black hover:scale-105 transition duration-300 cursor-pointer" key={categoria.id_category} onClick={() => handleCategoryClick(categoria.id_category)} style={{ cursor: 'pointer' }}>
-                        <img src={`/storage/${categoria.photo}`} alt={categoria.name} width="200" className="mb-4" />
-                        <p>{categoria.name}</p>
-                        <p>{categoria.description}</p>
-                        <div className="flex gap-2">
-                        {user && user['role'] === 'admin' && (
-                            <>
-                                <button className="w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg  hover:border-2 hover:border-primary hover:text-primary transition duration-300" onClick={(e) => { e.stopPropagation(); handleDeleteCategory(categoria.id_category); }}>Eliminar</button>
-                                <br />
-                                <button className="w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg  hover:border-2 hover:border-primary hover:text-primary transition duration-300"onClick={(e) => { e.stopPropagation(); handleEditCategory(categoria); }}>Editar</button>
-                            </>
-                        )}
-                        </div>
-                       
-                    </li>
-                ))}
-            </ul>
-            {modoEdicion && (
-                <EditarCategoria categoria={categoriaSeleccionada} />
-            )}
-            {borrado && (
-                <p>{borrado}</p>
-            )}
-        </div>
-        <Footer />
+            <main className="max-w-screen-xl mx-auto">
+                <h1 className="text-center text-3xl font-bold mb-4 mt-8">Lista de Categorías</h1>
+                {modoEdicion ? (
+                    <EditarCategoria categoria={categoriaSeleccionada} />
+                ) : (
+                    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {categorias.map(categoria => (
+                            <li key={categoria.id_category} className="bg-bgTertiary shadow-lg rounded-lg overflow-hidden">
+                                <img src={`/storage/${categoria.photo}`} alt={categoria.name} className="w-full h-64 object-cover hover:cursor-pointer hover:scale-105 transition duration-300" onClick={() => handleCategoryClick(categoria.id_category)}/>
+                                <div className="p-4">
+                                    <h2 className="text-xl font-bold mb-2 text-primary">{categoria.name}</h2>
+                                    <p className="text-white">{categoria.description}</p>
+                                    {user && user['role'] === 'admin' && (
+                                        <div className="mt-4 flex justify-center items-center gap-4">
+                                            <button className="w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg  hover:border-2 hover:border-primary hover:text-primary transition duration-300" onClick={() => handleDeleteCategory(categoria.id_category)}>Eliminar</button>
+                                            <button className="w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg  hover:border-2 hover:border-primary hover:text-primary transition duration-300" onClick={() => handleEditCategory(categoria)}>Editar</button>
+                                        </div>
+                                    )}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+                <Footer />
+            </main>
         </>
     );
 }

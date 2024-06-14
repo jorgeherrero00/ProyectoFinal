@@ -23,15 +23,15 @@ const GraficaPedidosPorMes = ({ pedidos }) => {
                 label: 'Número de Pedidos',
                 data: Object.values(pedidosPorMes),
                 fill: false,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: '#21D760',
+                borderColor: '#21D760',
                 tension: 0.1,
             },
         ],
     };
 
     return (
-        <div>
+        <div style={{width: '500px', height: '300px'}}>
             <h2>Pedidos por Mes</h2>
             <Line data={data} />
         </div>

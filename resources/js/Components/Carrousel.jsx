@@ -7,38 +7,21 @@ import image4 from '../../img/ssd-samsung.webp';
 import "antd/dist/reset.css";
 import "../../css/carrousel.css";
 
-const contentStyle = {
-  width: '60%',
-  height: '60%',
-  objectFit: 'contain', 
-  padding: '20px', 
-  margin: '0 auto',
-};
-
-const containerStyle = {
-  width: '60%',
-  height: 'auto',
-  margin: '5rem auto', 
-  padding: '0px 5px',
-  borderRadius: '10px', 
-  overflow: 'hidden', 
-  background: '#262626', 
-};
 
 const Carrousel = () => (
-  <div style={containerStyle} className=''>
+  <div className='containerStyle'>
     <Carousel autoplay className='mt-30'>
       <div>
-        <img src={image1} alt="Corsair RAM" style={contentStyle} />
+        <img src={image1} alt="Corsair RAM" className='contentStyle'/>
+      </div>
+      <div> 
+        <img src={image2} alt="Fuente Seasonic" className='contentStyle' />
       </div>
       <div>
-        <img src={image2} alt="Fuente Seasonic" style={contentStyle} />
+        <img src={image3} alt="Intel I9" className='contentStyle' />
       </div>
       <div>
-        <img src={image3} alt="Intel I9" style={contentStyle} />
-      </div>
-      <div>
-        <img src={image4} alt="SSD Samsung" style={contentStyle} />
+        <img src={image4} alt="SSD Samsung" className='contentStyle' />
       </div>
     </Carousel>
   </div>

@@ -21,10 +21,20 @@
             'canRegister' => Route::has('register'),
             'user' => Auth::user(),
         ]);
-    });
+    })->name('home');
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+        return Inertia::render('Profile/Edit', ['user' => Auth::user()]);
     })->middleware(['auth', 'verified'])->name('dashboard');
+
+    Route::get('/register', function () {
+        return Inertia::render('Auth/Register', ['user' => Auth::user()]);
+    })->name('register');
+
+    Route::get('/registerAdmin', function () {
+        return Inertia::render('Auth/RegisterAdmin', ['user' => Auth::user()]);
+    })->name('registerAdmin');
+
+
 
     Route::get('/mi-cuenta', function () {
         return Inertia::render('Auth/Login', ['user' => Auth::user()]);
@@ -49,9 +59,16 @@
         ]);
     })->name('Categoria/DetalleCategoria');
     Route::get('/productos', function () {
-        
         return Inertia::render('Producto/ListaProducto', ['user' => Auth::user()]);
     })->name('Producto/ListaProducto');
+
+    Route::get('/editar-categoria/{id_category}', function ($id_category) {
+        return Inertia::render('Categoria/EditarCategoria', [
+            'user' => Auth::user(),
+            'id_category' => $id_category,
+        ]);
+    })->name('Categoria/EditarCategoria');
+    
 
     Route::get('/carrito', function () {
         return Inertia::render('Carrito/Carrito', ['user' => Auth::user()]);
@@ -74,6 +91,7 @@
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
+Route::post('/registerAdmin', [\App\Http\Controllers\Auth\RegisteredUserController::class, 'registerAdmin'])->name('registerAdmin');
 
     Route::post('crearCategoria', [\App\Http\Controllers\CategoriaController::class, 'crearCategoria'])->name('crear-categoria');
     Route::get('obtenerCategorias', [\App\Http\Controllers\CategoriaController::class, 'obtenerCategorias'])->name('obtener-categorias');
@@ -93,5 +111,28 @@
 
     Route::get('/pedido/{orderId}/review', [\App\Http\Controllers\ReviewController::class, 'create'])->name('review.create');
     Route::post('/pedido/review', [\App\Http\Controllers\ReviewController::class, 'store'])->name('review.store');
+
+
+    Route::get('/condicionesCompra', function () {
+        return Inertia::render('Legalidad/CondicionesCompra' , ['user' => Auth::user()]);
+    })->name('Legalidad/CondicionesCompra');
+
+    Route::get('/quienesSomos', function () {
+        return Inertia::render('Legalidad/QuienesSomos' , ['user' => Auth::user()]);
+    })->name('Legalidad/QuienesSomos');
+
+    Route::get('/contactInfo', function () {
+        return Inertia::render('Legalidad/ContactInfo' , ['user' => Auth::user()]);
+    })->name('Legalidad/ContactInfo');
+
+    Route::get('/informacionEnvios', function () {
+        return Inertia::render('Legalidad/InformacionEnvios' , ['user' => Auth::user()]);
+    })->name('Legalidad/informacionEnvios');
+
+    Route::get('/FAQ', function () {
+        return Inertia::render('Legalidad/FAQ' , ['user' => Auth::user()]);
+    })->name('Legalidad/FAQ');
+
+
 
     require __DIR__.'/auth.php';

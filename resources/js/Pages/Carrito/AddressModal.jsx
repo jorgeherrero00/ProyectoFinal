@@ -14,6 +14,15 @@ function AddressModal({ show, closeModal, carrito, user }) {
   const [seccionActual, setSeccionActual] = useState('carrito');
   const [errorMensajes, setErrorMensajes] = useState({});
 
+  const calcularTotalCarrito = () => {
+    return Object.keys(carrito).reduce((total, username) => {
+      return total + Object.keys(carrito[username]).reduce((subtotal, productName) => {
+        return subtotal + carrito[username][productName].totalPrice;
+      }, 0);
+    }, 0);
+  };
+
+  const totalCarrito = calcularTotalCarrito();
   const mostrarSeccionDireccion = () => {
     setSeccionActual('direccion');
   };
@@ -35,26 +44,24 @@ function AddressModal({ show, closeModal, carrito, user }) {
 
     setErrorMensajes({});
     setSeccionActual('pago');
-    loadPayPalScript();
+    loadPayPalScript(totalCarrito);
   };
 
   useEffect(() => {
     if (!show) {
       closeModal();
       document.body.style.overflow = 'auto';
-    }else{
+    } else {
       document.body.style.overflow = 'auto';
-
     }
   }, [show, closeModal]);
 
-  
-  const loadPayPalScript = async () => {
+  const loadPayPalScript = async (total) => {
     const script = document.createElement('script');
-    script.src = `https://www.paypal.com/sdk/js?client-id=${import.meta.env.VITE_PAYPAL_SANDBOX_CLIENT_ID}&currency=USD`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${import.meta.env.VITE_PAYPAL_SANDBOX_CLIENT_ID}&currency=EUR`;
     script.addEventListener('load', () => {
       window.paypal.Buttons({
-        createOrder: function(data, actions) {
+        createOrder: function (data, actions) {
           return fetch('/paypal/order', {
             method: 'post',
             headers: {
@@ -67,15 +74,16 @@ function AddressModal({ show, closeModal, carrito, user }) {
               codigoPostal: codigoPostal,
               ciudad: ciudad,
               provincia: provincia,
-              pais: pais
+              pais: pais,
+              total: total // Enviar el total del carrito al backend
             })
-          }).then(function(res) {
+          }).then(function (res) {
             return res.json();
-          }).then(function(orderData) {
+          }).then(function (orderData) {
             return orderData.id;
           });
         },
-        onApprove: function(data, actions) {
+        onApprove: function (data, actions) {
           return fetch('/paypal/capture', {
             method: 'post',
             headers: {
@@ -85,13 +93,13 @@ function AddressModal({ show, closeModal, carrito, user }) {
             body: JSON.stringify({
               orderID: data.orderID
             })
-          }).then(function(res) {
+          }).then(function (res) {
             return res.json();
-          }).then(function(details) {
+          }).then(function (details) {
             router.get('/pedidos');
           });
         },
-        onCancel: function(data) {
+        onCancel: function (data) {
           window.location.href = '/paypal/cancel';
         }
       }).render('#paypal-button-container');
@@ -100,32 +108,34 @@ function AddressModal({ show, closeModal, carrito, user }) {
   };
 
   return (
-    <Modal show={show} onHide={closeModal} className='mb-8'>
+    <Modal show={show} onHide={closeModal} className='text-black flex mx-auto' style={{ marginTop: '10rem' }}>
       <Modal.Header closeButton>
-        <Modal.Title>
-          {seccionActual === 'carrito' ? 'Carrito de Compras' : seccionActual === 'direccion' ? 'Dirección de Envío' : 'Información de Pago'}
+        <Modal.Title className='text-center '>
+          {seccionActual === 'carrito' ? 'Información del pedido' : seccionActual === 'direccion' ? 'Dirección de Envío' : 'Información de Pago'}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {seccionActual === 'carrito' ? (
-          // Sección de Carrito de Compras
-          Object.keys(carrito).map((username, index) => (
-            <div key={index}>
-              <h3>Usuario: {username}</h3>
-              <ul>
-                {Object.keys(carrito[username]).map((productName, productIndex) => (
-                  <li key={productIndex}>
-                    <p>Producto: {productName}</p>
-                    <p>Precio: {carrito[username][productName].price}</p>
-                    <p>Cantidad: {carrito[username][productName].quantity}</p>
-                    <p>Total: {carrito[username][productName].totalPrice}</p>
-                  </li>
-                ))}
-              </ul>
+          <>
+            {Object.keys(carrito).map((username, index) => (
+              <div key={index} className='bg-white shadow-md rounded-lg p-4'>
+                <ul>
+                  {Object.keys(carrito[username]).map((productName, productIndex) => (
+                    <li key={productIndex}>
+                      <p>Producto: {productName}</p>
+                      <p>Precio: {carrito[username][productName].price}€</p>
+                      <p>Cantidad: {carrito[username][productName].quantity}</p>
+                      <p>Total: {carrito[username][productName].totalPrice}€</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+            <div className="text-center mt-4">
+              <h5>Total del carrito: {totalCarrito.toFixed(2)}€</h5>
             </div>
-          ))
+          </>
         ) : seccionActual === 'direccion' ? (
-          // Sección de Dirección de Envío
           <Form>
             <Form.Group className="mb-3" controlId="formDireccion">
               <Form.Label>Dirección</Form.Label>
@@ -184,27 +194,26 @@ function AddressModal({ show, closeModal, carrito, user }) {
             </Form.Group>
           </Form>
         ) : (
-          // Sección de Información de Pago
           <div id="paypal-button-container"></div>
         )}
       </Modal.Body>
       <Modal.Footer>
         {seccionActual === 'carrito' ? (
-          <Button variant="primary" onClick={mostrarSeccionDireccion}>
+          <Button variant="primary" onClick={mostrarSeccionDireccion} className='w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-2 hover:border-primary hover:text-primary transition duration-300'>
             Siguiente
           </Button>
         ) : seccionActual === 'direccion' ? (
           <>
-            <Button variant="secondary" onClick={closeModal}>
+            <Button variant="secondary" onClick={closeModal} className='w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-2 hover:border-primary hover:text-primary transition duration-300'>
               Cerrar
             </Button>
-            <Button variant="primary" onClick={mostrarSeccionPago}>
+            <Button variant="primary" onClick={mostrarSeccionPago} className='w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-2 hover:border-primary hover:text-primary transition duration-300'>
               Siguiente
             </Button>
           </>
         ) : (
           <>
-            <Button variant="secondary" onClick={closeModal}>
+            <Button variant="secondary" onClick={closeModal} className='w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-2 hover:border-primary hover:text-primary transition duration-300'>
               Cerrar
             </Button>
           </>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react'; // Importa useState
 import GuestLayout from '@/Layouts/GuestLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
@@ -6,9 +6,14 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import Navigation from '@/Components/Navigation';
-export default function Register({user}) {
-    const { auth } = usePage().props;
-    const { data, setData, post, processing, errors, reset } = useForm({
+import axios from 'axios';
+import { router } from '@inertiajs/react';
+import Footer from '@/Components/Footer';
+
+export default function RegisterAdmin({ user }) {
+    const { auth, errors } = usePage().props;
+
+    const { data, setData, post, processing, reset } = useForm({
         name: '',
         surname: '',
         phone: '',
@@ -18,15 +23,37 @@ export default function Register({user}) {
         role: '',
     });
 
+    const [passwordMatchError, setPasswordMatchError] = useState(false); // Estado para controlar el error de coincidencia de contraseñas
+
     useEffect(() => {
-        return () => {
-            reset('password', 'password_confirmation');
-        };
+        reset('password', 'password_confirmation');
     }, []);
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('register'));
+
+        // Validar que las contraseñas coincidan exactamente
+        if (data.password !== data.password_confirmation) {
+            setPasswordMatchError(true);
+            return;
+        }
+
+        // Si las contraseñas coinciden, continuar con la solicitud POST
+        axios.post('/registerAdmin', data)
+            .then(() => {
+                router.get('/')
+            })
+            .catch((error) => {
+                if (error.response && error.response.status === 422) {
+                    setData('password', ''); // Limpiar campos de contraseña
+                    setData('password_confirmation', '');
+
+                    const errorData = error.response.data.errors;
+                    Object.keys(errorData).forEach((key) => {
+                        setData(key, data[key]);
+                    });
+                }
+            });
     };
 
     return (
@@ -36,7 +63,7 @@ export default function Register({user}) {
             <div className="flex flex-col items-center mt-10 mb-20">
                 <div className="bg-gradient-to-br from-primary to-secondary w-80 rounded-3xl flex flex-col justify-center items-center p-6">
                     <div>
-                        <h2 className="text-black text-3xl font-bold">Regístrate</h2>
+                        <h2 className="text-black text-3xl font-bold">Registro para Administradores</h2>
                     </div>
                 </div>
                 <form onSubmit={submit} className="w-90 mt-4 text-center">
@@ -76,8 +103,8 @@ export default function Register({user}) {
                             name="phone"
                             value={data.phone}
                             className="mt-1 block w-full mx-auto px-3 py-1 rounded-2xl text-black"
-                            autoComplete="phone"
-                            onChange={(e) => setData('phone', e.target.value)}
+                            autoComplete="tel"
+                            onChange={(e) => setData('phone', e.target.value.replace(/\D/, ''))}
                             placeholder="Teléfono..."
                             required
                         />
@@ -107,9 +134,13 @@ export default function Register({user}) {
                             value={data.password}
                             className="mt-1 block w-full mx-auto px-3 py-1 rounded-2xl text-black"
                             autoComplete="new-password"
-                            onChange={(e) => setData('password', e.target.value)}
+                            onChange={(e) => {
+                                setData('password', e.target.value);
+                                setPasswordMatchError(false); // Limpiar el error al cambiar la contraseña
+                            }}
                             placeholder="Contraseña..."
                             required
+                            minLength="8"
                         />
                         <InputError message={errors.password} className="mt-2" />
                     </div>
@@ -122,14 +153,31 @@ export default function Register({user}) {
                             value={data.password_confirmation}
                             className="mt-1 block w-full mx-auto px-3 py-1 rounded-2xl text-black"
                             autoComplete="new-password"
-                            onChange={(e) => setData('password_confirmation', e.target.value)}
+                            onChange={(e) => {
+                                setData('password_confirmation', e.target.value);
+                                setPasswordMatchError(false); // Limpiar el error al cambiar la confirmación de contraseña
+                            }}
                             placeholder="Confirma tu Contraseña..."
                             required
+                            minLength="8"
                         />
+                        {passwordMatchError && (
+                            <InputError message="Las contraseñas no coinciden" className="mt-2" />
+                        )}
                         <InputError message={errors.password_confirmation} className="mt-2" />
                     </div>
 
-            {user && user['role'] === 'admin' && (
+                    {Object.keys(errors).length > 0 && (
+                        <div className="text-red-500 mt-4">
+                            <ul>
+                                {Object.keys(errors).map((key, index) => (
+                                    <li key={index}>{errors[key][0]}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
+                    {user && user['role'] === 'admin' && (
                         <div className="mt-4">
                             <InputLabel htmlFor="role" value="Rol" className="hidden" />
                             <select
@@ -151,16 +199,18 @@ export default function Register({user}) {
                     <div className="flex items-center justify-end mt-4">
                         <Link
                             href={route('login')}
-                            className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            className="underline text-sm text-gray-400 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                         >
                             ¿Ya tienes una cuenta?
                         </Link>
-                        <PrimaryButton className="ms-4 rounded-2xl mb-2 bg-primary p-4 py-1 font-bold text-black" disabled={processing}>
+                        <PrimaryButton type="submit" className="ms-4 rounded-2xl mb-2 bg-primary p-4 py-1 font-bold text-black hover:bg-secondary hover:text-white" disabled={processing}>
                             Registrar
                         </PrimaryButton>
                     </div>
                 </form>
             </div>
+            <Footer />
         </GuestLayout>
+        
     );
 }

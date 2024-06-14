@@ -1,43 +1,79 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import Navigation from "@/Components/Navigation.jsx";
 import axios from "axios";
 import AddressModal from './AddressModal.jsx';
 import { router } from '@inertiajs/react';
-import Navigation from "@/Components/Navigation.jsx";
+import Footer from "@/Components/Footer.jsx";
 
 export default function Carrito({ user }) {
     const [carrito, setCarrito] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [mensajeError, setMensajeError] = useState('');
 
     useEffect(() => {
         fetch('/obtenerCarrito')
             .then(response => response.json())
             .then(data => {
-                setCarrito(data);
+                // Asumiendo que data es un objeto con claves de usuario
+                // y productos, convertimos a un array de productos
+                const productos = [];
+                for (const username in data) {
+                    for (const productName in data[username]) {
+                        productos.push(data[username][productName]);
+                    }
+                }
+                setCarrito(productos);
             });
     }, []);
-    
-    const handleIncrement = (username, productName) => {
-        const updatedCarrito = { ...carrito };
-        updatedCarrito[username][productName].quantity += 1;
-        updatedCarrito[username][productName].totalPrice = updatedCarrito[username][productName].quantity * updatedCarrito[username][productName].price;
-        setCarrito(updatedCarrito);
-        axios.post('/actualizarCarrito', { carrito: updatedCarrito });
+
+    const calcularTotalCarrito = () => {
+        return carrito.reduce((total, producto) => {
+            return total + producto.totalPrice;
+        }, 0);
     };
 
-    const handleDecrement = (username, productName) => {
-        const updatedCarrito = { ...carrito };
-        updatedCarrito[username][productName].quantity -= 1;
-        if (updatedCarrito[username][productName].quantity === 0) {
-            delete updatedCarrito[username][productName];
-            if (Object.keys(updatedCarrito[username]).length === 0) {
-                delete updatedCarrito[username];
-            }
-            axios.post('/borrarProductoCarrito', { username: username, productName: productName });
-        } else {
-            updatedCarrito[username][productName].totalPrice = updatedCarrito[username][productName].quantity * updatedCarrito[username][productName].price;
+    const handleIncrement = (producto) => {
+        if (producto.quantity < producto.stock) {
+            const updatedCarrito = carrito.map(item => {
+                if (item.id === producto.id) {
+                    return {
+                        ...item,
+                        quantity: item.quantity + 1,
+                        totalPrice: (item.quantity + 1) * item.price
+                    };
+                }
+                return item;
+            });
+            setCarrito(updatedCarrito);
             axios.post('/actualizarCarrito', { carrito: updatedCarrito });
+        } else {
+            setMensajeError(`No hay suficiente stock disponible para ${producto.productName}, el stock actual es: ${producto.stock}`);
         }
+    };
+
+    const handleDecrement = (producto) => {
+        if (producto.quantity > 1) {
+            const updatedCarrito = carrito.map(item => {
+                if (item.id === producto.id) {
+                    return {
+                        ...item,
+                        quantity: item.quantity - 1,
+                        totalPrice: (item.quantity - 1) * item.price
+                    };
+                }
+                return item;
+            });
+            setCarrito(updatedCarrito);
+            axios.post('/actualizarCarrito', { carrito: updatedCarrito });
+        } else {
+            handleEliminarProducto(producto);
+        }
+    };
+
+    const handleEliminarProducto = (producto) => {
+        const updatedCarrito = carrito.filter(item => item.id !== producto.id);
         setCarrito(updatedCarrito);
+        axios.post('/borrarProductoCarrito', { id: producto.id });
     };
 
     const handleBorrarCarrito = () => {
@@ -54,63 +90,61 @@ export default function Carrito({ user }) {
         }
 
         setShowModal(true);
-        const productos = [];
-
-        for (const username in carrito) {
-            for (const productName in carrito[username]) {
-                const producto = carrito[username][productName];
-                productos.push({
-                    username: username,
-                    productName: productName,
-                    id: producto.id,
-                    price: producto.price,
-                    quantity: producto.quantity,
-                    totalPrice: producto.totalPrice
-                });
-            }
-        }
-
-        axios.post('/addPedido', { productos: productos })
-            .then(response => {
-                console.log(response.data);
-                setCarrito([]);
-            })
-            .catch(error => {
-                console.error('Error al comprar productos:', error);
-            });
     };
+
+    const totalCarrito = calcularTotalCarrito();
 
     return (
         <>
-            <div>
+            <div className="min-h-screen flex flex-col">
                 <Navigation user={user} />
-                <h1 className="text-3xl">Carrito</h1>
-                {Object.keys(carrito).length > 0 ? (
-                    <ul>
-                        {Object.keys(carrito).map((username, index) => (
-                            <li key={index}>
-                                {Object.keys(carrito[username]).map((productName, productIndex) => (
-                                    <div key={productIndex}>
-                                        <h3>Producto: {productName}</h3>
-                                        <img src={`/storage/${carrito[username][productName].image_path}`} alt={productName} width="100" />
-                                        <p>ID: {carrito[username][productName].id}</p>
-                                        <p>Precio: {carrito[username][productName].price}</p>
-                                        <p>Cantidad: {carrito[username][productName].quantity}</p>
-                                        <p>Total: {carrito[username][productName].totalPrice}</p>
-                                        <button onClick={() => handleIncrement(username, productName)}>+</button>
-                                        <button onClick={() => handleDecrement(username, productName)}>-</button>
-                                        <hr /><hr />
-                                    </div>
+                <div className="container mx-auto p-4">
+                    <h1 className="text-3xl font-bold mb-4 mt-8 text-center">Carrito</h1>
+                    {carrito.length > 0 ? (
+                        <>
+                            {mensajeError && (
+                                <p className="text-red-500">{mensajeError}</p>
+                            )}
+                            <ul className="space-y-4">
+                                {carrito.map((producto, index) => (
+                                    <li key={index} className="bg-white shadow-md rounded-lg p-4">
+                                        <div className="flex items-center space-x-4">
+                                            <div>
+                                                <img src={`/storage/${producto.image_path}`} alt={producto.productName} width="200" className="object-cover rounded-lg" />
+                                            </div>
+                                            <div className="text-black">
+                                                <h3 className="text-xl font-semibold">{producto.productName}</h3>
+                                                <p>Precio: {producto.price}€</p>
+                                                <p>Cantidad: {producto.quantity}</p>
+                                                <p>Total: {producto.totalPrice}€</p>
+                                            </div>
+                                            <div className="flex space-x-2">
+                                                <button onClick={() => handleIncrement(producto)} className="bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-primary hover:text-primary transition duration-300">+</button>
+                                                <button onClick={() => handleDecrement(producto)} className="bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-primary hover:text-primary transition duration-300">-</button>
+                                                <button onClick={() => handleEliminarProducto(producto)} className="bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-primary hover:text-primary transition duration-300">Eliminar</button>
+                                            </div>
+                                        </div>
+                                    </li>
                                 ))}
-                                <button onClick={handleBorrarCarrito}>Borrar Carrito</button>
-                                <button onClick={handleComprarProductos}>Añadir al pedido</button>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No hay productos en el carrito.</p>
-                )}
-                <AddressModal show={showModal} closeModal={() => setShowModal(false)} carrito={carrito} user={user} />
+                            </ul>
+                            <div className="flex justify-between items-center mt-4">
+                                <button onClick={handleBorrarCarrito} className="bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-primary hover:text-primary transition duration-300">Vaciar Carrito</button>
+                                <button onClick={handleComprarProductos} className="bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-primary hover:text-primary transition duration-300">Comprar</button>
+                            </div>
+                            <div className="text-center mt-4">
+                                <h5>Total del carrito: {totalCarrito.toFixed(2)}€</h5>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <p className="text-center text-gray-500">No hay productos en el carrito.</p>
+                            <p className="text-center text-gray-500 cursor-pointer hover:text-primary transition duration-300" onClick={()=> router.get('/productos')}>Empieza a comprar</p>
+                            <div style={{ height: '15vw' }}></div>
+                        </>
+                    )}
+                    <AddressModal show={showModal} closeModal={() => setShowModal(false)} carrito={carrito} user={user} />
+                </div>
+                <Footer />
             </div>
         </>
     );

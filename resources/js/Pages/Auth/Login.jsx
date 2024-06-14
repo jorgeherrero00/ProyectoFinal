@@ -204,7 +204,7 @@ export default function Login({ status, canResetPassword, user }) {
                 </span>
                 Google
               </PrimaryButton>
-              <Link href={route("register")} className="w-40">
+              <Link href="/register" className="w-40">
                 
                 <PrimaryButton className="rounded-2xl mb-2 bg-primary p-4 py-1 font-bold text-black">
                   

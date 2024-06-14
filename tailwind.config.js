@@ -31,6 +31,7 @@ export default {
                 secondary: "#117132",
                 bgPrimary : "#1A1A1A",
                 bgSecondary : "#F0F0F0",
+                bgTertiary : "#262626",
                 price: "#D22E2E",
         },
     },

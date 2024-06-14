@@ -53,7 +53,11 @@ const CrearCategoria = ({ user }) => {
       formData.append('photo', state.photo);
     }
 
-    router.post('/crearCategoria', formData);
+    router.post('/crearCategoria', formData, {
+      onSuccess: () => {
+        router.get('/categorias');
+      }
+    });
 
     setState({
       name: '',

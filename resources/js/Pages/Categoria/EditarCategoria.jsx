@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { router } from "@inertiajs/react";
 
-export default function EditarCategoria({ categoria, onUpdate }) {
+export default function EditarCategoria({ categoria }) {
     const [state, setState] = useState({
         id: categoria.id_category,
         name: categoria.name,
@@ -64,41 +64,45 @@ export default function EditarCategoria({ categoria, onUpdate }) {
     };
 
     return (
-        <div>
+        <div className="max-w-lg mx-auto mt-8">
             {categoria && (
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label>Nombre:</label>
+                <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">Nombre:</label>
                         <input
                             type="text"
                             name="name"
                             value={state.name}
                             onChange={handleChange}
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         />
                     </div>
-                    <div>
-                        <label>Descripción:</label>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">Descripción:</label>
                         <input
                             type="text"
                             name="description"
                             value={state.description}
                             onChange={handleChange}
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         />
                     </div>
-                    <div>
-                        <label>Foto:</label>
+
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">Foto:</label>
                         <input
                             type="file"
                             name="photo"
                             onChange={handleChange}
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         />
                     </div>
-                    <button type="submit">Actualizar</button>
+                    <button type="submit" className="w-full bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg  hover:border-2 hover:border-primary hover:text-primary transition duration-300">Actualizar</button>
                 </form>
             )}
 
-            {error && <p>{error}</p>}
-            {success && <p>{success}</p>}
+            {error && <p className="text-red-500">{error}</p>}
+            {success && <p className="text-green-500">{success}</p>}
         </div>
     );
 }

@@ -2,10 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
+html,
+body {
     background-color: #1A1A1A;
     color: #FBFBFB;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
+main{
+    flex: 1;}
+
 @keyframes slide-left {
     0% {
         opacity: 0;
@@ -17,6 +27,63 @@ body{
     }
 }
 
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: '-50%';
+    transform: 'translate(-50%, -50%)';
+    max-width: 90%;
+    max-width: 90%;
+    overflow: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    outline: none;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: 'rgba(0, 0, 0, 0.75)';
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
 .animate-slide-left {
     animation: slide-left 1s ease-out forwards;
+}
+@media (max-width: 1000px) {
+    footer .container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    footer .space-x-24 {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    footer .flex-col.space-y-2 {
+        width: 100%;
+        align-items: center;
+    }
+
+    footer .flex-col.items-start {
+        align-items: center;
+    }
 }

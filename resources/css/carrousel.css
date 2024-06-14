@@ -1,6 +1,39 @@
+/* Estilos para los puntos de navegación del carousel */
 .ant-carousel .slick-dots li button {
-    background-color: #117132 ;
+    background-color: #117132;
 }
+
 .ant-carousel .slick-dots li.slick-active button {
     background-color: #21D760;
+}
+
+/* Estilos para el contenedor del carousel */
+.containerStyle {
+    width: 60%;
+    height: auto;
+    margin: 5rem auto; 
+    padding: 0px 5px;
+    border-radius: 10px; 
+    overflow: hidden; 
+    background: #262626; 
+}
+
+/* Estilos para el contenido dentro del carousel */
+.contentStyle {
+    width: 60%;
+    height: 60%;
+    object-fit: contain; 
+    padding: 20px; 
+    margin: 0 auto;
+}
+
+
+@media screen and (max-width: 480px) {
+    .containerStyle {
+        width: 90%;
+    }
+    .contentStyle {
+        width: 100%;
+    }
+    
 }

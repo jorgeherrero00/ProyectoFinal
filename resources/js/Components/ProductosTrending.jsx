@@ -25,7 +25,7 @@ export default function ProductosTrending() {
                    <h2 className="text-3xl font-bold tracking-widest font-header text-primary">TRENDING</h2>
                </div>
 
-               <div id='random_products' className='flex flex-wrap'>
+               <div id='random_products' className='flex flex-wrap justify-center items-center md:justify-center md:items-center sm:justify-center sm:items-center'>
                    {productos.map(producto => (
                        <div key={producto.id_product} onClick={() => handleProductClick(producto.id_product)} style={{ cursor: 'pointer' }} className="p-4 hover:scale-105 transition duration-300 cursor-pointer">
                            {producto.image_path && (
