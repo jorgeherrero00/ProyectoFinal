@@ -71,11 +71,20 @@ export default function Carrito({ user }) {
     };
 
     const handleEliminarProducto = (producto) => {
-        const updatedCarrito = carrito.filter(item => item.id !== producto.id);
-        setCarrito(updatedCarrito);
-        axios.post('/borrarProductoCarrito', { id: producto.id });
+        axios.post('/borrarProductoCarrito', { id: producto.id })
+            .then(response => {
+                if (response.data.success) {
+                    setCarrito(response.data.carrito);
+                    router.get('/');
+                } else {
+                    console.error('Error al eliminar producto del carrito:', response.data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error al enviar solicitud para eliminar producto:', error);
+            });
     };
-
+    
     const handleBorrarCarrito = () => {
         axios.post('/borrarCarrito').then((response) => {
             console.log(response);

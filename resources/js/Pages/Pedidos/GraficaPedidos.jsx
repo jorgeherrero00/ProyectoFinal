@@ -20,7 +20,7 @@ const GraficaPedidosPorMes = ({ pedidos }) => {
     };
 
     return (
-        <div style={{width: '500px', height: '300px'}}>
+        <div className='w-3/4 lg:w-2/5'>
             <h2>Estado de los Pedidos</h2>
             <Bar data={data} />
         </div>

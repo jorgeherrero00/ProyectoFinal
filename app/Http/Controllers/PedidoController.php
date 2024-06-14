@@ -59,10 +59,8 @@ class PedidoController extends Controller
         $totalPrice = 0;
 
         foreach ($carrito as $itemGroup) {
-            foreach ($itemGroup as $item) {
-                $items[] = $item['name'];
-                $totalPrice += $item['totalPrice'];
-            }
+                $items[] = $itemGroup['name'];
+                $totalPrice += $itemGroup['totalPrice'];
         }
 
         $itemsString = implode(', ', $items);
@@ -79,27 +77,27 @@ class PedidoController extends Controller
         $datos['address'] = $direccion . ' ' . $codigoPostal . ' ' . $ciudad . ' ' . $provincia . ' ' . $pais;
 
         foreach ($carrito as $itemGroup) {
-            foreach ($itemGroup as $item) {
+            
                 // Actualizar el stock del producto
-                $product = Product::where('id_product', $item['id'])->first();
+                $product = Product::where('id_product', $itemGroup['id'])->first();
                 if ($product) {
-                    $product->stock -= $item['quantity'];
+                    $product->stock -= $itemGroup['quantity'];
                     $product->save();
                 }
 
                 OrderLines::create([
                     'order_id' => $order->id_order,
-                    'product_name' => $item['name'],
-                    'quantity' => $item['quantity'],
-                    'price' => $item['totalPrice'],
+                    'product_name' => $itemGroup['name'],
+                    'quantity' => $itemGroup['quantity'],
+                    'price' => $itemGroup['totalPrice'],
                 ]);
 
                 $datos['orderDetails'][] = [
-                    'name' => $item['name'],
-                    'quantity' => $item['quantity'],
-                    'price' => $item['totalPrice'],
+                    'name' => $itemGroup['name'],
+                    'quantity' => $itemGroup['quantity'],
+                    'price' => $itemGroup['totalPrice'],
                 ];
-            }
+            
         }
 
         Mail::to(Auth::user()->email)->send(new OrderConfirmationMail($datos));

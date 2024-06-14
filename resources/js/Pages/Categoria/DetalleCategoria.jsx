@@ -51,7 +51,7 @@ const DetalleCategoria = ({ user, id_category }) => {
                         </div>
                     ))}
                 </div>
-                <button onClick={() => router.get('/categorias')} className="mt-8 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                <button onClick={() => router.get('/categorias')} className="mt-8 block w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-2 hover:border-primary hover:text-primary transition duration-300">
                     Volver a la Lista de Categorías
                 </button>
             </div>

@@ -15,11 +15,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
   const [errorMensajes, setErrorMensajes] = useState({});
 
   const calcularTotalCarrito = () => {
-    return Object.keys(carrito).reduce((total, username) => {
-      return total + Object.keys(carrito[username]).reduce((subtotal, productName) => {
-        return subtotal + carrito[username][productName].totalPrice;
-      }, 0);
-    }, 0);
+    return carrito.reduce((total, producto) => total + producto.totalPrice, 0);
   };
 
   const totalCarrito = calcularTotalCarrito();
@@ -108,7 +104,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
   };
 
   return (
-    <Modal show={show} onHide={closeModal} className='text-black flex mx-auto' style={{ marginTop: '10rem' }}>
+    <Modal show={show} onHide={closeModal} centered className='text-black flex mx-auto'>
       <Modal.Header closeButton>
         <Modal.Title className='text-center '>
           {seccionActual === 'carrito' ? 'Información del pedido' : seccionActual === 'direccion' ? 'Dirección de Envío' : 'Información de Pago'}
@@ -117,20 +113,16 @@ function AddressModal({ show, closeModal, carrito, user }) {
       <Modal.Body>
         {seccionActual === 'carrito' ? (
           <>
-            {Object.keys(carrito).map((username, index) => (
-              <div key={index} className='bg-white shadow-md rounded-lg p-4'>
-                <ul>
-                  {Object.keys(carrito[username]).map((productName, productIndex) => (
-                    <li key={productIndex}>
-                      <p>Producto: {productName}</p>
-                      <p>Precio: {carrito[username][productName].price}€</p>
-                      <p>Cantidad: {carrito[username][productName].quantity}</p>
-                      <p>Total: {carrito[username][productName].totalPrice}€</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            <ul>
+              {carrito.map((producto, index) => (
+                <li key={index} className='bg-white shadow-md rounded-lg p-4'>
+                  <p>Producto: {producto.productName}</p>
+                  <p>Precio: {producto.price}€</p>
+                  <p>Cantidad: {producto.quantity}</p>
+                  <p>Total: {producto.totalPrice}€</p>
+                </li>
+              ))}
+            </ul>
             <div className="text-center mt-4">
               <h5>Total del carrito: {totalCarrito.toFixed(2)}€</h5>
             </div>
@@ -212,11 +204,9 @@ function AddressModal({ show, closeModal, carrito, user }) {
             </Button>
           </>
         ) : (
-          <>
-            <Button variant="secondary" onClick={closeModal} className='w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-2 hover:border-primary hover:text-primary transition duration-300'>
-              Cerrar
-            </Button>
-          </>
+          <Button variant="secondary" onClick={closeModal} className='w-auto bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-2 hover:border-primary hover:text-primary transition duration-300'>
+            Cancelar
+          </Button>
         )}
       </Modal.Footer>
     </Modal>

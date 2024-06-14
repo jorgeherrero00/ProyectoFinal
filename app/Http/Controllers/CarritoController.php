@@ -1,5 +1,4 @@
-<?php 
-// app/Http/Controllers/CarritoController.php
+<?php
 
 namespace App\Http\Controllers;
 
@@ -16,17 +15,23 @@ class CarritoController extends Controller
     }
 
     public function borrarProductoCarrito(Request $request) {
-        $username = $request->input('username');
-        $productName = $request->input('productName');
+        $idProducto = $request->input('id'); // Cambiar 'username' y 'productName' por 'id'
         $carrito = $request->session()->get('carrito', []);
 
-        if (isset($carrito[$username][$productName])) {
-            unset($carrito[$username][$productName]);
-            if (empty($carrito[$username])) {
-                unset($carrito[$username]);
+        foreach ($carrito as $username => &$productos) {
+            foreach ($productos as $productName => $producto) {
+                if ($producto['id'] == $idProducto) {
+                    unset($productos[$productName]);
+                    if (empty($productos)) {
+                        unset($carrito[$username]);
+                    }
+                    $request->session()->put('carrito', $carrito);
+                    return response()->json(['success' => true, 'carrito' => $carrito]);
+                }
             }
-            $request->session()->put('carrito', $carrito);
         }
+
+        return response()->json(['success' => false, 'message' => 'Producto no encontrado en el carrito']);
     }
 
     public function actualizarCarrito(Request $request) {
