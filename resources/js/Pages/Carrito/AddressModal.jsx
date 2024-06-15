@@ -104,7 +104,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
   };
 
   return (
-    <Modal show={show} onHide={closeModal} centered className='text-black flex mx-auto'>
+    <Modal show={show} onHide={closeModal} centered className='text-black flex align-items-center justify-content-center w-2/5 modal' style={{marginTop: '10%'}}>
       <Modal.Header closeButton>
         <Modal.Title className='text-center '>
           {seccionActual === 'carrito' ? 'Información del pedido' : seccionActual === 'direccion' ? 'Dirección de Envío' : 'Información de Pago'}
@@ -116,7 +116,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
             <ul>
               {carrito.map((producto, index) => (
                 <li key={index} className='bg-white shadow-md rounded-lg p-4'>
-                  <p>Producto: {producto.productName}</p>
+                  <p>Producto: {producto.name}</p>
                   <p>Precio: {producto.price}€</p>
                   <p>Cantidad: {producto.quantity}</p>
                   <p>Total: {producto.totalPrice}€</p>
@@ -137,6 +137,8 @@ function AddressModal({ show, closeModal, carrito, user }) {
                 value={direccion}
                 onChange={(e) => setDireccion(e.target.value)}
                 required
+                className="ml-2"
+                
               />
               {errorMensajes.direccion && <p style={{ color: 'red' }}>{errorMensajes.direccion}</p>}
             </Form.Group>
@@ -148,6 +150,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
                 value={codigoPostal}
                 onChange={(e) => setCodigoPostal(e.target.value)}
                 required
+                className="ml-2"
               />
               {errorMensajes.codigoPostal && <p style={{ color: 'red' }}>{errorMensajes.codigoPostal}</p>}
             </Form.Group>
@@ -159,6 +162,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
                 value={ciudad}
                 onChange={(e) => setCiudad(e.target.value)}
                 required
+                className="ml-2"
               />
               {errorMensajes.ciudad && <p style={{ color: 'red' }}>{errorMensajes.ciudad}</p>}
             </Form.Group>
@@ -170,6 +174,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
                 value={provincia}
                 onChange={(e) => setProvincia(e.target.value)}
                 required
+                className="ml-2"
               />
               {errorMensajes.provincia && <p style={{ color: 'red' }}>{errorMensajes.provincia}</p>}
             </Form.Group>
@@ -181,6 +186,7 @@ function AddressModal({ show, closeModal, carrito, user }) {
                 value={pais}
                 onChange={(e) => setPais(e.target.value)}
                 required
+                className="ml-2"
               />
               {errorMensajes.pais && <p style={{ color: 'red' }}>{errorMensajes.pais}</p>}
             </Form.Group>

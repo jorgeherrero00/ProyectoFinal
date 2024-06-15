@@ -10,6 +10,7 @@ class Reviews extends Model
 
     protected $fillable = ['order_id', 'customer_id', 'product_id', 'title', 'description', 'rating'];
     protected $table = 'review';
+
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id', 'id_product');

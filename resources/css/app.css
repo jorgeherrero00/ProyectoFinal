@@ -52,7 +52,9 @@ main{
     bottom: 0;
     background-color: 'rgba(0, 0, 0, 0.75)';
 }
-
+.modal{
+    margin-left: -40vh;
+}
 .close-button {
     position: absolute;
     top: 10px;

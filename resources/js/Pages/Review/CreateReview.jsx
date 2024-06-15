@@ -8,11 +8,13 @@ export default function CreateReview({ user, order }) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [rating, setRating] = useState(1);
+    const [productName, setProductName] = useState(order.items || ''); // Asumir que order.items es el nombre del producto
 
     const handleSubmit = (e) => {
         e.preventDefault();
         axios.post('/pedido/review', {
             order_id: order.id_order,
+            product_name: productName, // Enviar el nombre del producto
             title: title,
             description: description,
             rating: rating,

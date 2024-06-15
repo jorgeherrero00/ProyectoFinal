@@ -15,6 +15,7 @@ import avatar from "../../../img/avatar.webp";
 import Navigation from "@/Components/Navigation";
 import google from "../../../img/googleç.webp";
 import Footer from "@/Components/Footer";
+
 export default function Login({ status, canResetPassword, user }) {
   const { props } = usePage();
   const { message } = props;
@@ -23,15 +24,18 @@ export default function Login({ status, canResetPassword, user }) {
     password: "",
     remember: false,
   });
+
   useEffect(() => {
     return () => {
       reset("password");
     };
   }, []);
+
   const submit = (e) => {
     e.preventDefault();
     post(route("login"));
   };
+
   useEffect(() => {
     const firebaseConfig = {
       apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -46,6 +50,7 @@ export default function Login({ status, canResetPassword, user }) {
       firebase.initializeApp(firebaseConfig);
     }
   }, []);
+
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase
@@ -77,146 +82,111 @@ export default function Login({ status, canResetPassword, user }) {
         console.error(error);
       });
   };
+
   return (
     <>
-    <GuestLayout>
-      
-      <Navigation user={props.user} /> <Head title="Log in" />
-      {message && <div className="">{message}</div>}
-      {status && <div className="">{status}</div>}
-      <div className="flex flex-row justify-evenly mt-10 mb-20">
-        
-        <div className="bg-gradient-to-br from-primary to-secondary w-80 rounded-3xl flex flex-col justify-center items-center">
-          
-          <div>
-            
-            <img width={200} src={avatar} alt="" />
-          </div>
-          <div>
-            
-            <h2 className="text-black text-3xl font-bold">
-              Únete a nosotros
-            </h2>
-          </div>
-          <div>
-            
-            <h4 className="text-black">Para estar al día de todo</h4>
-          </div>
-        </div>
-        <form onSubmit={submit} className="w-90 mt-4 text-center">
-          
-          <div>
-            
-            <h2 className="text-3xl font-bold">Bienvenido de nuevo</h2>
-            <div className="mt-4">
-              
-              <InputLabel
-                htmlFor="email"
-                value="Email"
-                className="hidden"
-              />
-              <TextInput
-                id="email"
-                type="email"
-                name="email"
-                value={data.email}
-                className="mt-1 block w-full mx-auto px-3 py-1 rounded-2xl text-black"
-                placeholder="Email..."
-                autoComplete="username"
-                isFocused={true}
-                onChange={(e) => setData("email", e.target.value)}
-              />
-              <InputError message={errors.email} className="mt-2" />
+      <GuestLayout>
+        <Navigation user={props.user} />
+        <Head title="Log in" />
+        {message && <div className="">{message}</div>}
+        {status && <div className="">{status}</div>}
+        <div className="flex flex-col lg:flex-row justify-evenly mt-10 mb-20">
+          <div className="bg-gradient-to-br from-primary to-secondary w-full lg:w-80 rounded-3xl flex flex-col justify-center items-center p-6 mb-6 lg:mb-0">
+            <div>
+              <img width={200} src={avatar} alt="" />
             </div>
-            <div className="mt-4">
-              
-              <InputLabel
-                htmlFor="password"
-                value="Contraseña"
-                className="hidden"
-              />
-              <TextInput
-                id="password"
-                type="password"
-                name="password"
-                placeholder="Contraseña..."
-                value={data.password}
-                className="mt-1 block w-full mx-auto px-3 py-1 rounded-2xl text-black"
-                autoComplete="current-password"
-                onChange={(e) => setData("password", e.target.value)}
-              />
-              <InputError message={errors.password} className="mt-2" />
+            <div>
+              <h2 className="text-black text-3xl font-bold text-center">
+                Únete a nosotros
+              </h2>
             </div>
-            <div className="block mt-4">
-              
-              <label className="flex">
-                
-                <Checkbox
-                  name="remember"
-                  checked={data.remember}
-                  onChange={(e) => setData("remember", e.target.checked)}
+            <div>
+              <h4 className="text-black text-center">Para estar al día de todo</h4>
+            </div>
+          </div>
+          <form onSubmit={submit} className="w-full lg:w-1/2 mt-4 text-center">
+            <div>
+              <h2 className="text-3xl font-bold">Bienvenido de nuevo</h2>
+              <div className="mt-4">
+                <InputLabel htmlFor="email" value="Email" className="hidden" />
+                <TextInput
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={data.email}
+                  className="mt-1 block w-full mx-auto px-3 py-1 rounded-2xl text-black"
+                  placeholder="Email..."
+                  autoComplete="username"
+                  isFocused={true}
+                  onChange={(e) => setData("email", e.target.value)}
                 />
-                <span className="ml-3">Recordarme</span>
-              </label>
-            </div>
-            <div className="mt-4">
-              
-              {canResetPassword && (
-                <Link
-                  href={route("password.request")}
-                  className="text-blue-500"
-                >
-                  
-                  ¿Has olvidado tu contraseña?
-                </Link>
-              )}
-            </div>
-            <div className="mt-4">
-              
-              <PrimaryButton
-                className="rounded-2xl mb-2 bg-primary p-4 py-1 font-bold text-black"
-                disabled={processing}
-              >
-                
-                Iniciar sesión
-              </PrimaryButton>
-            </div>
-            <div className="flex items-center mt-4">
-              
-              <span className="flex-grow border-t border-white-400"></span>
-              <span className="mx-2 text-white">O también</span>
-              <span className="flex-grow border-t border-white-400"></span>
-            </div>
-            <div className="mt-4 flex justify-center">
-              
-              <PrimaryButton
-                className="rounded-2xl mb-2 bg-primary p-4 py-1 font-bold text-black flex items-center !letter-spacing-1"
-                onClick={signInWithGoogle}
-              >
-                
-                <span>
-                  <img
-                    src={google}
-                    alt="logo-google"
-                    width={20}
-                    className="mr-2"
+                <InputError message={errors.email} className="mt-2" />
+              </div>
+              <div className="mt-4">
+                <InputLabel htmlFor="password" value="Contraseña" className="hidden" />
+                <TextInput
+                  id="password"
+                  type="password"
+                  name="password"
+                  placeholder="Contraseña..."
+                  value={data.password}
+                  className="mt-1 block w-full mx-auto px-3 py-1 rounded-2xl text-black"
+                  autoComplete="current-password"
+                  onChange={(e) => setData("password", e.target.value)}
+                />
+                <InputError message={errors.password} className="mt-2" />
+              </div>
+              <div className="block mt-4">
+                <label className="flex justify-center items-center">
+                  <Checkbox
+                    name="remember"
+                    checked={data.remember}
+                    onChange={(e) => setData("remember", e.target.checked)}
                   />
-                </span>
-                Google
-              </PrimaryButton>
-              <Link href="/register" className="w-40">
-                
-                <PrimaryButton className="rounded-2xl mb-2 bg-primary p-4 py-1 font-bold text-black">
-                  
-                  Registrarse
+                  <span className="ml-3">Recordarme</span>
+                </label>
+              </div>
+              <div className="mt-4">
+                {canResetPassword && (
+                  <Link href={route("password.request")} className="text-blue-500">
+                    ¿Has olvidado tu contraseña?
+                  </Link>
+                )}
+              </div>
+              <div className="mt-4">
+                <PrimaryButton
+                  className="rounded-2xl mb-2 bg-primary p-4 py-1 font-bold text-black"
+                  disabled={processing}
+                >
+                  Iniciar sesión
                 </PrimaryButton>
-              </Link>
+              </div>
+              <div className="flex items-center mt-4">
+                <span className="flex-grow border-t border-white-400"></span>
+                <span className="mx-2 text-white">O también</span>
+                <span className="flex-grow border-t border-white-400"></span>
+              </div>
+              <div className="mt-4 flex flex-col lg:flex-row justify-center items-center">
+                <PrimaryButton
+                  className="rounded-2xl mb-2 bg-primary p-4 py-1 font-bold text-black flex items-center justify-center lg:mr-2"
+                  onClick={signInWithGoogle}
+                >
+                  <span>
+                    <img src={google} alt="logo-google" width={20} className="mr-2" />
+                  </span>
+                  Google
+                </PrimaryButton>
+                <Link href="/register" className="w-full lg:w-40">
+                  <PrimaryButton className="rounded-2xl mb-2 bg-primary p-4 py-1 font-bold text-black">
+                    Registrarse
+                  </PrimaryButton>
+                </Link>
+              </div>
             </div>
-          </div>
-        </form>
-      </div>
-    </GuestLayout>
+          </form>
+        </div>
+      </GuestLayout>
       <Footer />
-      </>
+    </>
   );
 }

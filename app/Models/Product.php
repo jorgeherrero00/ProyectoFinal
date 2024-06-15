@@ -10,6 +10,8 @@ class Product extends Model
 
     protected $primaryKey = 'id_product';
     protected $fillable = ['category_id', 'name', 'description', 'price', 'stock', 'image_path'];
+
+    protected $table = 'products';
     public function reviews()
     {
         return $this->hasMany(Reviews::class, 'order_id', 'id_product');
