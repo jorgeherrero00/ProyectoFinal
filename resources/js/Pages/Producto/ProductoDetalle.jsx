@@ -68,7 +68,7 @@ export default function ProductoDetalle({ user, producto }) {
                 <div className="flex flex-col md:flex-row items-center">
                     <div className="w-full md:w-1/2 mb-4 md:mb-0">
                         {producto.image_path && (
-                            <img src={`/storage/${producto.image_path}`} alt={producto.name} className="rounded-lg shadow-md mx-auto md:ml-0" />
+                            <img src={`/storage/${producto.image_path}`} alt={producto.name} className="rounded-lg shadow-md mx-auto md:ml-0" width="300" height="100"/>
                         )}
                     </div>
                     <div className="w-full md:w-1/2 md:ml-8">

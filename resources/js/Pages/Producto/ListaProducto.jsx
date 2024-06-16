@@ -41,7 +41,8 @@ export default function ListaProductos({ user }) {
 
     const handleProductClick = (id_product) => {
         router.get(`/producto/${id_product}`);
-    }
+    };
+
 
     return (
         <>
@@ -53,7 +54,7 @@ export default function ListaProductos({ user }) {
                         {productos.map(product => (
                             <li className="bg-bgTertiary shadow-lg rounded-lg overflow-hidden" key={product.id_product} style={{ cursor: 'pointer' }}>
                                 {product.image_path && (
-                                    <img src={`/storage/${product.image_path}`} alt={product.name} className="w-full h-64 object-cover hover:cursor-pointer hover:scale-105 transition duration-300" onClick={() => handleProductClick(product.id_product)} />
+                                    <img onClick={() => handleProductClick(product.id_product)} src={`/storage/${product.image_path}`} alt={product.name} className="w-full h-64 object-cover hover:cursor-pointer hover:scale-105 transition duration-300" onClick={() => handleProductClick(product.id_product)} />
                                 )}
                                 <div className="p-4" >
                                     <h2 className="text-xl font-bold mb-2 text-primary">{product.name}</h2>

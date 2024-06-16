@@ -30,7 +30,7 @@ export default function ProductosTrending() {
                        <div key={producto.id_product} onClick={() => handleProductClick(producto.id_product)} style={{ cursor: 'pointer' }} className="p-4 hover:scale-105 transition duration-300 cursor-pointer">
                            {producto.image_path && (
                             <div>
-                                <img src={`/storage/${producto.image_path}`} alt={producto.name} style={{ width: '200px', height: '130px' }} className='bg-white p-2 mx-auto ' />
+                                <img src={`/storage/${producto.image_path}`} alt={producto.name} style={{ width: '190px', height: '150px' }} className='bg-white p-2 mx-auto ' />
                             </div>
                         )}
                            <h3 className='mt-5'>{producto.name}</h3>
