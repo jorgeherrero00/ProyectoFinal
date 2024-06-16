@@ -9,8 +9,8 @@
 
     Route::post('paypal/order', [PayPalController::class, 'createOrder'])->name('paypal.order');
     Route::post('paypal/capture', [PayPalController::class, 'captureOrder'])->name('paypal.capture');
-    Route::get('paypal/success', [PayPalController::class, 'success'])->name('paypal.success');
-    Route::get('paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
+    Route::get('/paypal/success', [PayPalController::class, 'success'])->name('paypal.success');
+    Route::get('/paypal/cancel', [PayPalController::class, 'cancel'])->name('paypal.cancel');
 
     Route::any('auth/google', [FirebaseController::class, 'redirectToGoogle']);
     Route::any('auth/google/callback', [FirebaseController::class, 'handleGoogleCallback']);
@@ -102,6 +102,8 @@ Route::post('/registerAdmin', [\App\Http\Controllers\Auth\RegisteredUserControll
     Route::post('crearProducto', [\App\Http\Controllers\ProductoController::class, 'crearProducto'])->name('crear-producto');
     Route::get('obtenerProductos', [\App\Http\Controllers\ProductoController::class, 'obtenerProductos'])->name('obtener-productos');
     Route::get('/producto/{id}', [\App\Http\Controllers\ProductoController::class, 'obtenerProducto'])->name('producto.detalle');
+    Route::get('/productoCarrito/{id}', [\App\Http\Controllers\ProductoController::class, 'obtenerProducto2'])->name('producto.detalle');
+
     Route::post('/buscarCategorias', [\App\Http\Controllers\CategoriaController::class, 'buscarCategorias']);
     Route::get('/obtenerCategoria/{id_category}', [\App\Http\Controllers\CategoriaController::class, 'obtenerCategoria']);
     Route::post('addPedido', [\App\Http\Controllers\PedidoController::class, 'addPedido'])->middleware('auth')->name('add-pedido');
