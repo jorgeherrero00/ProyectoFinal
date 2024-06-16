@@ -18,17 +18,21 @@ export default function ListaCategorias({ user }) {
     }, []);
 
     const handleDeleteCategory = (id_category) => {
-        axios.post('borrarCategoria/', {
-            id_category: id_category,
+        axios.get('borrarCategoria/', {
+            params: {
+                id_category: id_category,
+            }
         })
         .then(function (response) {
             setBorrado('Se ha borrado correctamente');
+            // Optionally refresh the categories list or navigate to a different route
             router.get('/categorias');
         })
         .catch(function (error) {
             console.log(error);
             setBorrado('Error al borrar la categoría');
         });
+        
     };
 
     const handleEditCategory = (categoria) => {

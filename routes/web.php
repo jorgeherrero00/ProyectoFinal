@@ -78,11 +78,11 @@
         return Inertia::render('Pedidos/pedidos', ['user' => Auth::user()]);
     })->name('Pedido/pedidos');
 
-    Route::post('borrarProducto/', [\App\Http\Controllers\ProductoController::class, 'borrarProducto'])->name('borrar-producto');
+    Route::match(['get', 'post'],'borrarProducto/', [\App\Http\Controllers\ProductoController::class, 'borrarProducto'])->name('borrar-producto');
     Route::post('agregarCarrito/', [\App\Http\Controllers\CarritoController::class, 'agregarCarrito'])->name('agregar-carrito');
     Route::get('obtenerCarrito/', [\App\Http\Controllers\CarritoController::class, 'obtenerCarrito'])->name('obtener-carrito');
     Route::post('actualizarCarrito/', [\App\Http\Controllers\CarritoController::class, 'actualizarCarrito'])->name('actualizar-carrito');
-    Route::post('borrarCategoria/', [\App\Http\Controllers\CategoriaController::class, 'borrarCategoria'])->name('borrar-categoria');
+    Route::match(['get', 'post'], 'borrarCategoria/', [\App\Http\Controllers\CategoriaController::class, 'borrarCategoria'])->name('borrar-categoria');
     Route::post('borrarProductoCarrito/', [\App\Http\Controllers\CarritoController::class, 'borrarProductoCarrito'])->name('borrar-producto-carrito');
     Route::post('borrarCarrito/', [\App\Http\Controllers\CarritoController::class, 'borrarCarrito'])->name('borrar-carrito');
 
