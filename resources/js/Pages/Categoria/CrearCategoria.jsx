@@ -67,9 +67,15 @@ const CrearCategoria = ({ user }) => {
     setErrors({});
   };
 
+  if (!user || user.role !== 'admin') {
+    router.get('/');
+    return null;
+  }
   return (
     <>
+    
       <div className="min-h-screen bg-bgPrimary">
+        
         <Navigation user={user} />
         <div className="container mx-auto py-8">
           <h2 className="text-2xl font-semibold mb-6 text-center">Crear Categoría</h2>

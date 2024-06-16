@@ -62,6 +62,10 @@ export default function EditarCategoria({ categoria }) {
             setError('Error al actualizar la categoría.');
         });
     };
+    if (!user || user.role !== 'admin') {
+        router.get('/');
+        return null;
+      }
 
     return (
         <div className="max-w-lg mx-auto mt-8">
