@@ -34,6 +34,8 @@ const CrearCategoria = ({ user }) => {
     }
     if (!state.description) {
       newErrors.description = 'La descripción es requerida.';
+    } else if (state.description.length > 200) {
+      newErrors.description = 'La descripción no puede contener más de 200 caracteres.';
     }
     return newErrors;
   };
@@ -71,11 +73,10 @@ const CrearCategoria = ({ user }) => {
     router.get('/');
     return null;
   }
+
   return (
     <>
-    
       <div className="min-h-screen bg-bgPrimary">
-        
         <Navigation user={user} />
         <div className="container mx-auto py-8">
           <h2 className="text-2xl font-semibold mb-6 text-center">Crear Categoría</h2>
@@ -98,6 +99,7 @@ const CrearCategoria = ({ user }) => {
                 value={state.description}
                 onChange={handleChange}
                 className={`w-full px-3 py-2 border rounded-lg text-black focus:outline-none transition duration-300 ${errors.description ? 'border-red-500' : 'border-gray-300 focus:border-primary'}`}
+                maxLength="200"
               ></textarea>
               {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
             </div>
@@ -112,7 +114,7 @@ const CrearCategoria = ({ user }) => {
             </div>
             <button
               type="submit"
-              className="w-full bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg  hover:border-2 hover:border-primary hover:text-primary transition duration-300"
+              className="w-full bg-bgPrimary border-2 border-bgPrimary text-white py-2 px-4 rounded-lg hover:border-2 hover:border-primary hover:text-primary transition duration-300"
             >
               Crear Categoría
             </button>

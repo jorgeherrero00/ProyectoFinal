@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
 import Navigation from '@/Components/Navigation';
 import Footer from '@/Components/Footer';
+
 const CrearProducto = ({ user }) => {
   const [state, setState] = useState({
     name: '',
@@ -28,6 +29,12 @@ const CrearProducto = ({ user }) => {
       setState({
         ...state,
         image: files[0]
+      });
+    } else if (name === 'description' && value.length > 200) {
+      // Limitar la descripción a 200 caracteres
+      setState({
+        ...state,
+        [name]: value.substring(0, 200)
       });
     } else {
       setState({
@@ -81,6 +88,7 @@ const CrearProducto = ({ user }) => {
     router.get('/');
     return null;
   }
+
   return (
     <div className="min-h-screen bg-bgPrimary">
       <Navigation user={user} />
